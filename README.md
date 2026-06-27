@@ -13,11 +13,13 @@
 
 <br/><br/>
 
+
 ```
   🌱  H a b i t F l o w
   ─────────────────────
   grow every day, one habit at a time
 ```
+
 
 **A modern, matcha-inspired habit tracker — Java Spring Boot web app.**  
 Track daily habits · earn badges · visualize your growth · deployed on Render.com.
@@ -141,3 +143,9 @@ MIT License — see [LICENSE](LICENSE)
 
 
 *Small habits. Big changes. Every single day. 🌱🍵 *
+
+
+
+[README.md](https://github.com/slaaggull-lgtm/habitflow/blob/main/README_TR.md)
+[🇹🇷 Türkçe README için buraya tıklayın](README_TR.md)
+
