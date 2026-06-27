@@ -18,6 +18,8 @@
 **Modern ve matcha esintili bir alışkanlık takipçisi — Java Spring Boot web uygulaması.🌿🌿**  
 Günlük alışkanlıkları takip edin · rozetler kazanın · gelişiminizi görselleştirin · Render.com üzerinde canlıda.
 
+🌱 🍵[[Canlı gelişim sürecini izlemek için buraya tıklayın](https://habitflow-4ins.onrender.com)] (Not: Proje şu an aktif olarak geliştirilmektedir. Sadece tamamlanan modüller canlıya yansımaktadır.)
+
 </div>
 
 ---
