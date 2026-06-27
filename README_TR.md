@@ -15,36 +15,36 @@
   her seferinde bir alışkanlıkla,her gün kendinizi geliştirin
 ```
 
-**Modern ve matcha esintili bir alışkanlık takipçisi — Java Spring Boot web uygulaması.**  
+**Modern ve matcha esintili bir alışkanlık takipçisi — Java Spring Boot web uygulaması.🌿🌿**  
 Günlük alışkanlıkları takip edin · rozetler kazanın · gelişiminizi görselleştirin · Render.com üzerinde canlıda.
 
 </div>
 
 ---
 
-## ✨ Özellikler
+##  💚Özellikler
 
-- **Günlük İşaretleme** — Alışkanlıkları tek tıkla tamamlandı olarak işaretleyin
-- **Seri  Takibi** — Güncel ve en uzun seri sayaçları
-- **10 Başarı Rozeti** — İlk Adım'dan 🌱 Yüzyıllık Kulüp'e 🏆 kadar uzanan ödüller
-- **İstatistikler** — 30 günlük aktivite grafiği ve alışkanlık dağılımı
-- **Akıllı Kategoriler** — Sağlık, Fitness, Öğrenme, Farkındalık , Verimlilik ve daha fazlası
-- **Özelleştirilebilir** — Alışkanlık başına isim, açıklama, hedef günler ve özel renk tanımlama
-- **Matcha Tasarımı** —Krem arka planlar, adaçayı yeşilleri ve tamamen mobil uyumlu arayüz
-- **Java Backend Altyapıs** — Spring Boot + Thymeleaf + JPA + SQLite
+- **🟢Günlük İşaretleme** — Alışkanlıkları tek tıkla tamamlandı olarak işaretleyin
+- **🟢Seri  Takibi** — Güncel ve en uzun seri sayaçları
+- **🟢10 Başarı Rozeti** — İlk Adım'dan 🌱 Yüzyıllık Kulüp'e 🏆 kadar uzanan ödüller
+- **🟢İstatistikler** — 30 günlük aktivite grafiği ve alışkanlık dağılımı
+- **🟢Akıllı Kategoriler** — Sağlık, Fitness, Öğrenme, Farkındalık , Verimlilik ve daha fazlası
+- **🟢Özelleştirilebilir** — Alışkanlık başına isim, açıklama, hedef günler ve özel renk tanımlama
+- **🟢Matcha Tasarımı** —Krem arka planlar, adaçayı yeşilleri ve tamamen mobil uyumlu arayüz
+- **🟢Java Backend Altyapıs** — Spring Boot + Thymeleaf + JPA + SQLite
 
 ---
 
-## 🚀 Render ile Canlıya Alın (Kurulum Gerektirmez)
+## ❇️ Render ile Canlıya Alın (Kurulum Gerektirmez)
 
-### Adım 1 — Github'a Yükleme
+### ✅Adım 1 — Github'a Yükleme
 
 1. [github.com] adresine gidin (https://github.com) → **New repository** → adını `HabitFlow` yapın → **Create**
 2. [GitHub Desktop] uygulamasını indirin (https://desktop.github.com/) (no terminal needed)
 3. GitHub Desktop'ı açın → **Add Existing Repository** → bilgisayarınızdaki zipten çıkarılmış klasörü seçin
 4. **Publish Repository** butonuna tıklayın →GitHub hesabınızı seçin →Yayınlayın
 
-### Adım 2 — Render üzerinde Canlıya Alma
+### ✅Adım 2 — Render üzerinde Canlıya Alma
 
 1.  [render.com] adresine gidin. (https://render.com) → Ücretsiz kaydolun (GitHub ile giriş yapın)
 2.  **New +** butonuna tıklayın → **Web Service** seçeneğini seçin
@@ -57,7 +57,7 @@ Günlük alışkanlıkları takip edin · rozetler kazanın · gelişiminizi gö
 
 ---
 
-## 🛠 Teknoloji Yığını
+## 🔋 Teknoloji Yığını
 
 | Teknoloji | Versiyon| Kullanım Amacı|
 |------------|---------|---------|
@@ -71,7 +71,7 @@ Günlük alışkanlıkları takip edin · rozetler kazanın · gelişiminizi gö
 
 ---
 
-## 📁 Bulut Sunucu / Barındırma
+## 🟩 Bulut Sunucu / Barındırma
 
 ```
 habitflow/
@@ -109,7 +109,7 @@ habitflow/
 
 ---
 
-## 🏅 Rozetler
+## 💚 Rozetler
 
 | Rozet | Gereksinim |
 |-------|-------------|
