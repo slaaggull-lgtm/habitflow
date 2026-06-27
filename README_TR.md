@@ -138,6 +138,9 @@ MIT Lisansı —detaylar için [LICENSE](LISANS) dosyasına ulaşabilirsin.
 
 *Small habits. Big changes. Every single day. 🍵🌱*
 
+[README_md]( https://github.com/slaaggull-lgtm/habitflow/blob/main/README.md)
+[🇬🇧 For English README click here](README.md)
+
 </div>
 
 ---
