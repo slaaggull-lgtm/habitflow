@@ -21,36 +21,36 @@
 ```
 
 
-**A modern, matcha-inspired habit tracker — Java Spring Boot web app.**  
+**A modern, matcha-inspired habit tracker — Java Spring Boot web app.🌿🌿**  
 Track daily habits · earn badges · visualize your growth · deployed on Render.com.
 
 </div>
 
 ---
 
-## ✨ Features
+##  💚Features
 
-- **Daily Check-ins** — Mark habits done with one click
-- **Streak Tracking** — Current & longest streak counters
-- **10 Achievement Badges** — From First Step 🌱 to Century Club 🏆
-- **Statistics** — 30-day activity chart & habit breakdown
-- **Smart Categories** — Health, Fitness, Learning, Mindfulness, Productivity & more
-- **Customisable** — Name, description, target days, color per habit
-- **Matcha Design** — Cream backgrounds, sage greens, fully responsive
-- **Java Backend** — Spring Boot + Thymeleaf + JPA + SQLite
+- **🟢Daily Check-ins** — Mark habits done with one click
+- **🟢Streak Tracking** — Current & longest streak counters
+- **🟢10 Achievement Badges** — From First Step 🌱 to Century Club 🏆
+- **🟢Statistics** — 30-day activity chart & habit breakdown
+- **🟢Smart Categories** — Health, Fitness, Learning, Mindfulness, Productivity & more
+- **🟢Customisable** — Name, description, target days, color per habit
+- **🟢Matcha Design** — Cream backgrounds, sage greens, fully responsive
+- **🟢Java Backend** — Spring Boot + Thymeleaf + JPA + SQLite
 
 ---
 
-## 🚀 Deploy to Render (No Installation Required)
+## ❇️Deploy to Render (No Installation Required)
 
-### Step 1 — Push to GitHub
+### ✅Step 1 — Push to GitHub
 
 1. Go to [github.com](https://github.com) → **New repository** → name it `HabitFlow` → **Create**
 2. Download [GitHub Desktop](https://desktop.github.com/) (no terminal needed)
 3. Open GitHub Desktop → **Add Existing Repository** → select the unzipped folder
 4. Click **Publish Repository** → choose your GitHub account → Publish
 
-### Step 2 — Deploy on Render
+### ✅Step 2 — Deploy on Render
 
 1. Go to [render.com](https://render.com) → Sign up free (use GitHub login)
 2. Click **New +** → **Web Service**
@@ -63,7 +63,7 @@ Track daily habits · earn badges · visualize your growth · deployed on Render
 
 ---
 
-## 🛠 Tech Stack
+## 🔋 Tech Stack
 
 | Technology | Version | Purpose |
 |------------|---------|---------|
@@ -77,7 +77,7 @@ Track daily habits · earn badges · visualize your growth · deployed on Render
 
 ---
 
-## 📁 Project Structure
+## 🟩 Project Structure
 
 ```
 habitflow/
@@ -115,7 +115,7 @@ habitflow/
 
 ---
 
-## 🏅 Badges
+## 💚 Badges
 
 | Badge | Requirement |
 |-------|-------------|
