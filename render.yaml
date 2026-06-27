@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: habitflow
+    runtime: java
+    buildCommand: mvn clean package -DskipTests
+    startCommand: java -jar target/habitflow-1.0.0.jar
+    envVars:
+      - key: PORT
+        value: 8080
+    disk:
+      name: habitflow-data
+      mountPath: /app
+      sizeGB: 1

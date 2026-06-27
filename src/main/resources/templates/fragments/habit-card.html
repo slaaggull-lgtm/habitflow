@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- Reusable habit card -->
+<div th:fragment="habitCard(habit, done, redirectUrl)" class="habit-card" th:classappend="${done} ? ' habit-card-done' : ''">
+    <div class="habit-dot" th:style="'background:' + ${habit.color}"></div>
+
+    <div class="habit-info">
+        <div class="habit-name">
+            <span th:text="${habit.category.emoji}"></span>
+            <span th:text="${habit.name}"></span>
+        </div>
+        <div class="habit-desc" th:text="${habit.description}" th:if="${habit.description != null and !habit.description.isEmpty()}"></div>
+
+        <div class="habit-progress-wrap">
+            <div class="habit-progress-bar">
+                <div class="habit-progress-fill" th:style="'width:' + ${habit.progressPercent} + '%'"></div>
+            </div>
+        </div>
+
+        <div class="habit-meta">
+            <span>🔥 <span th:text="${habit.currentStreak}"></span> day streak</span>
+            <span th:text="${habit.progressPercentFormatted} + '% of ' + ${habit.targetDays} + '-day goal'"></span>
+            <span>✓ <span th:text="${habit.totalCompletions}"></span> total</span>
+        </div>
+    </div>
+
+    <form th:action="@{'/habits/' + ${habit.id} + '/toggle'}" method="post">
+        <input type="hidden" name="redirect" th:value="${redirectUrl}"/>
+        <button type="submit" class="check-btn" th:classappend="${done} ? ' check-btn-done' : ''"
+                th:text="${done} ? '✓' : '○'">○</button>
+    </form>
+</div>
+
+</body>
+</html>

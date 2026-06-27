@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('Statistics', ~{::content})}">
+<body>
+<th:block th:fragment="content">
+
+<div class="page">
+
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Statistics</h1>
+            <p class="page-subtitle">Visualize your growth journey 📈</p>
+        </div>
+    </div>
+
+    <!-- Summary cards -->
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="stat-label">Total Habits</div>
+            <div class="stat-value" th:text="${totalHabits}">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Active Streaks</div>
+            <div class="stat-value" th:text="${activeStreaks}">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Week Rate</div>
+            <div class="stat-value" th:text="${weekRate} + '%'">0%</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Total Check-ins</div>
+            <div class="stat-value" th:text="${totalCheckins}">0</div>
+        </div>
+    </div>
+
+    <!-- 30-day chart -->
+    <div class="card section">
+        <h2 class="section-title" style="margin-bottom:20px;">30-Day Activity</h2>
+        <div class="month-chart">
+            <div th:each="day : ${monthActivity}" class="month-bar"
+                 th:style="'height: ' + (4 + ${day.count} * 16) + 'px; background: ' + (${day.count == 0} ? '#DDE8D8' : '#7BA05B')"
+                 th:title="${day.label + ': ' + day.count + ' habits'}"></div>
+        </div>
+        <div class="month-chart-labels">
+            <span th:text="${monthActivity[0].label}"></span>
+            <span th:text="${monthActivity[monthActivity.size() - 1].label}"></span>
+        </div>
+    </div>
+
+    <!-- Habit breakdown -->
+    <section class="section">
+        <h2 class="section-title">Habit Breakdown</h2>
+
+        <div class="habits-list" th:if="${!habits.isEmpty()}">
+            <div class="card" th:each="h : ${habits}" style="margin-bottom:12px;">
+                <div class="habit-breakdown-header">
+                    <span th:text="${h.category.emoji}"></span>
+                    <span class="habit-name" th:text="${h.name}"></span>
+                    <span class="badge-chip">🔥 <span th:text="${h.currentStreak}"></span></span>
+                </div>
+                <div class="habit-progress-wrap" style="margin:10px 0;">
+                    <div class="habit-progress-bar">
+                        <div class="habit-progress-fill" th:style="'width:' + ${h.progressPercent} + '%'"></div>
+                    </div>
+                </div>
+                <div class="habit-meta">
+                    <span>Total: <strong th:text="${h.totalCompletions}"></strong></span>
+                    <span>Best: <strong th:text="${h.longestStreak}"></strong> days</span>
+                    <span>Goal: <strong th:text="${h.progressPercentFormatted} + '%'"></strong></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="empty-state" th:if="${habits.isEmpty()}">
+            <div class="empty-emoji">📊</div>
+            <div class="empty-title">No data yet</div>
+            <div class="empty-sub">Start tracking habits to see your statistics</div>
+        </div>
+    </section>
+
+</div>
+
+</th:block>
+</body>
+</html>

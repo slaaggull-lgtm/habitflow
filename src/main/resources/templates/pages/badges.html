@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('Badges', ~{::content})}">
+<body>
+<th:block th:fragment="content">
+
+<div class="page">
+
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Badges</h1>
+            <p class="page-subtitle">Your achievements and milestones 🏅</p>
+        </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="stat-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 400px;">
+        <div class="stat-card">
+            <div class="stat-label">Earned</div>
+            <div class="stat-value" th:text="${earnedCount} + ' / ' + ${totalCount}">0 / 10</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Completion</div>
+            <div class="stat-value" th:text="${#numbers.formatDecimal(earnedCount * 100.0 / totalCount, 0, 0)} + '%'">0%</div>
+        </div>
+    </div>
+
+    <!-- Earned -->
+    <section class="section" th:if="${!earnedBadges.isEmpty()}">
+        <h2 class="section-title">Earned Badges ✨</h2>
+        <div class="badges-grid">
+            <div class="badge-card earned" th:each="b : ${earnedBadges}">
+                <div class="badge-emoji" th:text="${b.type.emoji}">🌱</div>
+                <div class="badge-name" th:text="${b.type.name}">Badge</div>
+                <div class="badge-desc" th:text="${b.type.description}">Description</div>
+                <div class="badge-date" th:text="'Earned ' + ${b.earnedDate}"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Locked -->
+    <section class="section" th:if="${!lockedTypes.isEmpty()}">
+        <h2 class="section-title">Locked Badges 🔒</h2>
+        <div class="badges-grid">
+            <div class="badge-card locked" th:each="t : ${lockedTypes}">
+                <div class="badge-emoji locked-emoji" th:text="${t.emoji}">🌱</div>
+                <div class="badge-name locked-name" th:text="${t.name}">Badge</div>
+                <div class="badge-desc" th:text="${t.description}">Description</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="empty-state" th:if="${earnedBadges.isEmpty() and lockedTypes.isEmpty()}">
+        <div class="empty-emoji">🏅</div>
+        <div class="empty-title">No badges yet</div>
+        <div class="empty-sub">Complete habits to earn your first badge!</div>
+    </div>
+
+</div>
+
+</th:block>
+</body>
+</html>

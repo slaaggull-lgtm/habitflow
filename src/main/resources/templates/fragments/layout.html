@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:fragment="layout(title, content)">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${title} + ' · HabitFlow'">HabitFlow</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>"/>
+</head>
+<body>
+
+<div class="app-shell">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <span class="logo-emoji">🌱</span>
+            <span class="logo-title">HabitFlow</span>
+            <span class="logo-sub">grow every day</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a th:href="@{/}" class="nav-link" th:classappend="${activePage == 'dashboard'} ? ' nav-active' : ''">
+                <span class="nav-icon">📊</span> Dashboard
+            </a>
+            <a th:href="@{/habits}" class="nav-link" th:classappend="${activePage == 'habits'} ? ' nav-active' : ''">
+                <span class="nav-icon">✅</span> My Habits
+            </a>
+            <a th:href="@{/statistics}" class="nav-link" th:classappend="${activePage == 'statistics'} ? ' nav-active' : ''">
+                <span class="nav-icon">📈</span> Statistics
+            </a>
+            <a th:href="@{/badges}" class="nav-link" th:classappend="${activePage == 'badges'} ? ' nav-active' : ''">
+                <span class="nav-icon">🏅</span> Badges
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a th:href="@{/habits/new}" class="btn-add-sidebar">＋ New Habit</a>
+            <div class="sidebar-footer">
+                <span class="footer-version">HabitFlow v1.0 🌿</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Mobile top bar -->
+    <header class="mobile-header">
+        <span class="mobile-logo">🌱 HabitFlow</span>
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+    </header>
+
+    <!-- Mobile nav -->
+    <nav class="mobile-nav" id="mobileNav">
+        <a th:href="@{/}" class="mobile-nav-link" th:classappend="${activePage == 'dashboard'} ? ' nav-active' : ''">📊 Dashboard</a>
+        <a th:href="@{/habits}" class="mobile-nav-link" th:classappend="${activePage == 'habits'} ? ' nav-active' : ''">✅ My Habits</a>
+        <a th:href="@{/statistics}" class="mobile-nav-link" th:classappend="${activePage == 'statistics'} ? ' nav-active' : ''">📈 Statistics</a>
+        <a th:href="@{/badges}" class="mobile-nav-link" th:classappend="${activePage == 'badges'} ? ' nav-active' : ''">🏅 Badges</a>
+        <a th:href="@{/habits/new}" class="mobile-nav-link nav-add">＋ New Habit</a>
+    </nav>
+
+    <!-- Page content -->
+    <main class="main-content">
+        <th:block th:replace="${content}"/>
+    </main>
+
+</div>
+
+<script>
+function toggleMobileMenu() {
+    const nav = document.getElementById('mobileNav');
+    nav.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>
