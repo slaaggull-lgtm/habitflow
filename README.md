@@ -24,6 +24,9 @@
 **A modern, matcha-inspired habit tracker — Java Spring Boot web app.🌿🌿**  
 Track daily habits · earn badges · visualize your growth · deployed on Render.com.
 
+
+ 🌱 🍵 [[Click here to track live development](https://habitflow-4ins.onrender.com)]   *(Note: The project is under active development. Only completed modules are currently deployed.)*
+
 </div>
 
 ---
