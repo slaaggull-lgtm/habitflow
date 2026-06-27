@@ -146,6 +146,6 @@ MIT License — see [LICENSE](LICENSE)
 
 
 
-[README.md](https://github.com/slaaggull-lgtm/habitflow/blob/main/README_TR.md)
+[README_TR.md](https://github.com/slaaggull-lgtm/habitflow/blob/main/README_TR.md)
 [🇹🇷 Türkçe README için buraya tıklayın](README_TR.md)
 
