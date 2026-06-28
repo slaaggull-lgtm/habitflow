@@ -9,7 +9,7 @@
     <div class="page-header">
         <div>
             <h1 class="page-title">Statistics</h1>
-            <p class="page-subtitle">Visualize your growth journey 📈</p>
+            <p class="page-subtitle">Visualize your growth journey</p>
         </div>
     </div>
 
@@ -35,7 +35,9 @@
 
     <!-- 30-day chart -->
     <div class="card section">
-        <h2 class="section-title" style="margin-bottom:20px;">30-Day Activity</h2>
+        <div class="section-header" style="margin-bottom:20px;">
+            <h2 class="section-title">30-Day Activity</h2>
+        </div>
         <div class="month-chart">
             <div th:each="day : ${monthActivity}" class="month-bar"
                  th:style="'height: ' + (4 + ${day.count} * 16) + 'px; background: ' + (${day.count == 0} ? '#DDE8D8' : '#7BA05B')"
@@ -49,30 +51,32 @@
 
     <!-- Habit breakdown -->
     <section class="section">
-        <h2 class="section-title">Habit Breakdown</h2>
+        <h2 class="section-title" style="margin-bottom:16px;">Habit Breakdown</h2>
 
         <div class="habits-list" th:if="${!habits.isEmpty()}">
-            <div class="card" th:each="h : ${habits}" style="margin-bottom:12px;">
+            <div class="card" th:each="h : ${habits}" style="margin-bottom:10px;">
                 <div class="habit-breakdown-header">
                     <span th:text="${h.category.emoji}"></span>
-                    <span class="habit-name" th:text="${h.name}"></span>
-                    <span class="badge-chip">🔥 <span th:text="${h.currentStreak}"></span></span>
+                    <span th:text="${h.name}"></span>
+                    <span class="badge-chip">
+                        <span th:text="${h.currentStreak}"></span> day streak
+                    </span>
                 </div>
-                <div class="habit-progress-wrap" style="margin:10px 0;">
+                <div class="habit-progress-wrap" style="margin:10px 0 6px;">
                     <div class="habit-progress-bar">
-                        <div class="habit-progress-fill" th:style="'width:' + ${h.progressPercent} + '%'"></div>
+                        <div class="habit-progress-fill" th:style="'width:' + ${h.progressPercent} + '%; background:' + ${h.color}"></div>
                     </div>
+                    <span class="progress-pct" th:text="${h.progressPercentFormatted} + '%'"></span>
                 </div>
                 <div class="habit-meta">
-                    <span>Total: <strong th:text="${h.totalCompletions}"></strong></span>
-                    <span>Best: <strong th:text="${h.longestStreak}"></strong> days</span>
-                    <span>Goal: <strong th:text="${h.progressPercentFormatted} + '%'"></strong></span>
+                    <span class="meta-chip">Total: <strong th:text="${h.totalCompletions}"></strong></span>
+                    <span class="meta-chip">Best: <strong th:text="${h.longestStreak}"></strong> days</span>
+                    <span class="meta-chip-goal meta-chip" th:text="${h.targetDays} + '-day goal'"></span>
                 </div>
             </div>
         </div>
 
         <div class="empty-state" th:if="${habits.isEmpty()}">
-            <div class="empty-emoji">📊</div>
             <div class="empty-title">No data yet</div>
             <div class="empty-sub">Start tracking habits to see your statistics</div>
         </div>

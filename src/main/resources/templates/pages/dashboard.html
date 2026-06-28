@@ -17,33 +17,50 @@
     <!-- Stat cards -->
     <div class="stat-grid">
         <div class="stat-card">
+            <div class="stat-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
             <div class="stat-label">Today's Progress</div>
             <div class="stat-value" th:text="${todayDone} + ' / ' + ${totalHabits}">0 / 5</div>
             <div class="stat-sub">habits completed</div>
         </div>
         <div class="stat-card">
+            <div class="stat-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><polyline points="13 2 13 9 20 9"/><path d="M21 15.5a10 10 0 11-5.5-9"/></svg>
+            </div>
             <div class="stat-label">Longest Streak</div>
             <div class="stat-value" th:text="${bestStreak}">0</div>
-            <div class="stat-sub">days in a row 🔥</div>
+            <div class="stat-sub">days in a row</div>
         </div>
         <div class="stat-card">
+            <div class="stat-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
             <div class="stat-label">Total Check-ins</div>
             <div class="stat-value" th:text="${totalCheckins}">0</div>
-            <div class="stat-sub">all time ✨</div>
+            <div class="stat-sub">all time</div>
         </div>
         <div class="stat-card">
+            <div class="stat-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+            </div>
             <div class="stat-label">Badges Earned</div>
             <div class="stat-value" th:text="${badgeCount}">0</div>
-            <div class="stat-sub">achievements 🏅</div>
+            <div class="stat-sub">achievements</div>
         </div>
     </div>
 
     <!-- Today's habits -->
     <section class="section">
-        <h2 class="section-title">Today's Habits</h2>
+        <div class="section-header">
+            <h2 class="section-title">Today's Habits</h2>
+            <a th:href="@{/habits}" class="section-link">View all →</a>
+        </div>
 
         <div th:if="${habits.isEmpty()}" class="empty-state">
-            <div class="empty-emoji">🌱</div>
+            <div class="empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="width:48px;height:48px;opacity:0.3;"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+            </div>
             <div class="empty-title">No habits yet</div>
             <div class="empty-sub">Start your journey by adding your first habit</div>
             <a th:href="@{/habits/new}" class="btn-primary">＋ Add your first habit</a>
@@ -59,7 +76,9 @@
     <!-- Weekly chart -->
     <section class="section" th:if="${!habits.isEmpty()}">
         <div class="card">
-            <h2 class="section-title" style="margin-bottom:20px;">This Week at a Glance</h2>
+            <div class="section-header" style="margin-bottom:20px;">
+                <h2 class="section-title">This Week</h2>
+            </div>
             <div class="week-chart">
                 <div th:each="day : ${weekActivity}" class="week-bar-col">
                     <div class="week-bar-count" th:text="${day.count > 0 ? day.count : ''}"></div>

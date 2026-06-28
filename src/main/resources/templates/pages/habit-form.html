@@ -7,7 +7,7 @@
 <div class="page">
     <div class="page-header">
         <div>
-            <h1 class="page-title" th:text="${editMode} ? '✏️ Edit Habit' : '✨ New Habit'">New Habit</h1>
+            <h1 class="page-title" th:text="${editMode} ? 'Edit Habit' : 'New Habit'">New Habit</h1>
             <p class="page-subtitle">Small steps lead to big changes</p>
         </div>
     </div>
@@ -17,23 +17,23 @@
 
             <!-- Name -->
             <div class="form-group">
-                <label class="form-label">Habit Name *</label>
+                <label class="form-label">Habit Name <span class="form-required">*</span></label>
                 <input type="text" name="name" class="form-input"
                        placeholder="e.g. Drink 8 glasses of water"
-                       th:value="${habit.name}" required/>
+                       th:value="${habit.name}" required maxlength="100"/>
             </div>
 
             <!-- Description -->
             <div class="form-group">
-                <label class="form-label">Description</label>
+                <label class="form-label">Description <span class="form-optional">(optional)</span></label>
                 <textarea name="description" class="form-textarea" rows="3"
                           placeholder="What does this habit involve?"
-                          th:text="${habit.description}"></textarea>
+                          th:text="${habit.description}" maxlength="300"></textarea>
             </div>
 
             <!-- Category -->
             <div class="form-group">
-                <label class="form-label">Category *</label>
+                <label class="form-label">Category <span class="form-required">*</span></label>
                 <select name="category" class="form-select">
                     <option th:each="cat : ${categories}"
                             th:value="${cat.name()}"
@@ -72,7 +72,7 @@
             <div class="form-actions">
                 <a th:href="@{/habits}" class="btn-secondary">Cancel</a>
                 <button type="submit" class="btn-primary"
-                        th:text="${editMode} ? '💾 Save Changes' : '🌱 Create Habit'">Create Habit</button>
+                        th:text="${editMode} ? 'Save Changes' : 'Create Habit'">Create Habit</button>
             </div>
         </form>
     </div>

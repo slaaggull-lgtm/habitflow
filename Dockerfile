@@ -2,7 +2,7 @@
 FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# Cache dependencies separately so they aren't re-downloaded on every code change
+# Cache dependencies separately
 COPY pom.xml .
 RUN mvn dependency:go-offline -B
 
@@ -16,4 +16,6 @@ WORKDIR /app
 COPY --from=build /app/target/habitflow-1.0.0.jar app.jar
 
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+
+# -XX:TieredStopAtLevel=1 speeds up initial startup significantly
+ENTRYPOINT ["java", "-XX:TieredStopAtLevel=1", "-Xms128m", "-Xmx384m", "-jar", "app.jar"]

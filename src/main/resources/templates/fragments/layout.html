@@ -16,45 +16,67 @@
     <aside class="sidebar">
         <div class="sidebar-logo">
             <span class="logo-emoji">🌱</span>
-            <span class="logo-title">HabitFlow</span>
-            <span class="logo-sub">grow every day</span>
+            <div class="logo-text">
+                <span class="logo-title">HabitFlow</span>
+                <span class="logo-sub">grow every day</span>
+            </div>
         </div>
 
+        <div class="sidebar-section-label">Main</div>
         <nav class="sidebar-nav">
             <a th:href="@{/}" class="nav-link" th:classappend="${activePage == 'dashboard'} ? ' nav-active' : ''">
-                <span class="nav-icon">📊</span> Dashboard
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+                Dashboard
             </a>
             <a th:href="@{/habits}" class="nav-link" th:classappend="${activePage == 'habits'} ? ' nav-active' : ''">
-                <span class="nav-icon">✅</span> My Habits
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                My Habits
             </a>
             <a th:href="@{/statistics}" class="nav-link" th:classappend="${activePage == 'statistics'} ? ' nav-active' : ''">
-                <span class="nav-icon">📈</span> Statistics
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                Statistics
             </a>
             <a th:href="@{/badges}" class="nav-link" th:classappend="${activePage == 'badges'} ? ' nav-active' : ''">
-                <span class="nav-icon">🏅</span> Badges
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+                Badges
+            </a>
+        </nav>
+
+        <div class="sidebar-section-label" style="margin-top:12px;">Account</div>
+        <nav class="sidebar-nav">
+            <a th:href="@{/profile}" class="nav-link" th:classappend="${activePage == 'profile'} ? ' nav-active' : ''">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                Profile
+            </a>
+            <a th:href="@{/settings}" class="nav-link" th:classappend="${activePage == 'settings'} ? ' nav-active' : ''">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                Settings
             </a>
         </nav>
 
         <div class="sidebar-bottom">
-            <a th:href="@{/habits/new}" class="btn-add-sidebar">＋ New Habit</a>
-            <div class="sidebar-footer">
-                <span class="footer-version">HabitFlow v1.0 🌿</span>
-            </div>
+            <a th:href="@{/habits/new}" class="btn-add-sidebar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:15px;height:15px;flex-shrink:0;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                New Habit
+            </a>
         </div>
     </aside>
 
     <!-- Mobile top bar -->
     <header class="mobile-header">
         <span class="mobile-logo">🌱 HabitFlow</span>
-        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:20px;height:20px;"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
     </header>
 
     <!-- Mobile nav -->
     <nav class="mobile-nav" id="mobileNav">
-        <a th:href="@{/}" class="mobile-nav-link" th:classappend="${activePage == 'dashboard'} ? ' nav-active' : ''">📊 Dashboard</a>
-        <a th:href="@{/habits}" class="mobile-nav-link" th:classappend="${activePage == 'habits'} ? ' nav-active' : ''">✅ My Habits</a>
-        <a th:href="@{/statistics}" class="mobile-nav-link" th:classappend="${activePage == 'statistics'} ? ' nav-active' : ''">📈 Statistics</a>
-        <a th:href="@{/badges}" class="mobile-nav-link" th:classappend="${activePage == 'badges'} ? ' nav-active' : ''">🏅 Badges</a>
+        <a th:href="@{/}" class="mobile-nav-link" th:classappend="${activePage == 'dashboard'} ? ' nav-active' : ''">Dashboard</a>
+        <a th:href="@{/habits}" class="mobile-nav-link" th:classappend="${activePage == 'habits'} ? ' nav-active' : ''">My Habits</a>
+        <a th:href="@{/statistics}" class="mobile-nav-link" th:classappend="${activePage == 'statistics'} ? ' nav-active' : ''">Statistics</a>
+        <a th:href="@{/badges}" class="mobile-nav-link" th:classappend="${activePage == 'badges'} ? ' nav-active' : ''">Badges</a>
+        <a th:href="@{/profile}" class="mobile-nav-link" th:classappend="${activePage == 'profile'} ? ' nav-active' : ''">Profile</a>
         <a th:href="@{/habits/new}" class="mobile-nav-link nav-add">＋ New Habit</a>
     </nav>
 
@@ -67,8 +89,7 @@
 
 <script>
 function toggleMobileMenu() {
-    const nav = document.getElementById('mobileNav');
-    nav.classList.toggle('open');
+    document.getElementById('mobileNav').classList.toggle('open');
 }
 </script>
 

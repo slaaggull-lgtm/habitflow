@@ -17,7 +17,7 @@ public class Badge {
         PERFECT_WEEK("⭐", "Perfect Week", "Complete all habits for a full week"),
         MATCHA_ZEN("🍵", "Matcha Zen", "30 days of mindfulness habits"),
         EARLY_BIRD("🌅", "Early Bird", "Complete habits 7 days in a row"),
-        COMEBACK_KID("🔥", "Comeback Kid", "Resume a habit after a break");
+        COMEBACK_KID("⚡", "Comeback Kid", "Resume a habit after a break");
 
         private final String emoji;
         private final String name;

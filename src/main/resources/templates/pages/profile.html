@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('Profile', ~{::content})}">
+<body>
+<th:block th:fragment="content">
+
+<div class="page">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Profile</h1>
+            <p class="page-subtitle">Your journey at a glance</p>
+        </div>
+    </div>
+
+    <!-- Profile card -->
+    <div class="profile-card">
+        <div class="profile-avatar-wrap">
+            <div class="profile-avatar" id="avatarDisplay" th:text="${avatar}">🌱</div>
+            <button class="avatar-change-btn" onclick="toggleAvatarPicker()">Change</button>
+        </div>
+        <div class="profile-info">
+            <div class="profile-name" th:text="${displayName}">HabitFlow User</div>
+            <div class="profile-since">Member since <span th:text="${memberSince}">today</span></div>
+            <div class="profile-level-wrap">
+                <span class="profile-level" th:text="'Level ' + ${level}">Level 1</span>
+                <span class="profile-level-label" th:text="${levelLabel}">Seedling</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Avatar picker (hidden by default) -->
+    <div class="avatar-picker-panel" id="avatarPickerPanel" style="display:none;">
+        <div class="avatar-picker-title">Choose your avatar</div>
+        <div class="avatar-options">
+            <span th:each="opt : ${avatarOptions}" class="avatar-opt" th:text="${opt}"
+                  th:onclick="'pickAvatar(\'' + ${opt} + '\')'"></span>
+        </div>
+    </div>
+
+    <!-- Stats row -->
+    <div class="stat-grid" style="margin-top:24px;">
+        <div class="stat-card">
+            <div class="stat-label">Habits Tracked</div>
+            <div class="stat-value" th:text="${totalHabits}">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Total Check-ins</div>
+            <div class="stat-value" th:text="${totalCheckins}">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Best Streak</div>
+            <div class="stat-value" th:text="${bestStreak}">0</div>
+            <div class="stat-sub">days</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Badges</div>
+            <div class="stat-value" th:text="${badgeCount}">0</div>
+        </div>
+    </div>
+
+    <!-- Earned badges preview -->
+    <section class="section" th:if="${!recentBadges.isEmpty()}">
+        <div class="section-header">
+            <h2 class="section-title">Recent Badges</h2>
+            <a th:href="@{/badges}" class="section-link">All badges →</a>
+        </div>
+        <div class="badges-grid" style="grid-template-columns: repeat(auto-fill,minmax(140px,1fr));">
+            <div class="badge-card earned" th:each="b : ${recentBadges}">
+                <div class="badge-emoji" th:text="${b.type.emoji}"></div>
+                <div class="badge-name" th:text="${b.type.name}"></div>
+                <div class="badge-date" th:text="'Earned ' + ${b.earnedDate}"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Category breakdown -->
+    <section class="section" th:if="${!categoryStats.isEmpty()}">
+        <h2 class="section-title" style="margin-bottom:16px;">Habits by Category</h2>
+        <div class="category-breakdown">
+            <div class="cat-row" th:each="cs : ${categoryStats}">
+                <span class="cat-emoji" th:text="${cs.emoji}"></span>
+                <span class="cat-name" th:text="${cs.label}"></span>
+                <div class="cat-bar-track">
+                    <div class="cat-bar-fill" th:style="'width:' + ${cs.percent} + '%'"></div>
+                </div>
+                <span class="cat-count" th:text="${cs.count}"></span>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script>
+function toggleAvatarPicker() {
+    const p = document.getElementById('avatarPickerPanel');
+    p.style.display = p.style.display === 'none' ? 'block' : 'none';
+}
+function pickAvatar(emoji) {
+    document.getElementById('avatarDisplay').textContent = emoji;
+    document.getElementById('avatarPickerPanel').style.display = 'none';
+    // Persist via localStorage
+    localStorage.setItem('hf_avatar', emoji);
+}
+// Load saved avatar
+const saved = localStorage.getItem('hf_avatar');
+if (saved) document.addEventListener('DOMContentLoaded', () => {
+    const el = document.getElementById('avatarDisplay');
+    if (el) el.textContent = saved;
+});
+</script>
+
+</th:block>
+</body>
+</html>
