@@ -15,7 +15,6 @@
     <div class="form-card">
         <form th:action="${editMode} ? @{'/habits/' + ${habit.id} + '/edit'} : @{'/habits/new'}" method="post">
 
-            <!-- Name -->
             <div class="form-group">
                 <label class="form-label">Habit Name <span class="form-required">*</span></label>
                 <input type="text" name="name" class="form-input"
@@ -23,7 +22,6 @@
                        th:value="${habit.name}" required maxlength="100"/>
             </div>
 
-            <!-- Description -->
             <div class="form-group">
                 <label class="form-label">Description <span class="form-optional">(optional)</span></label>
                 <textarea name="description" class="form-textarea" rows="3"
@@ -31,10 +29,9 @@
                           th:text="${habit.description}" maxlength="300"></textarea>
             </div>
 
-            <!-- Category -->
             <div class="form-group">
                 <label class="form-label">Category <span class="form-required">*</span></label>
-                <select name="category" class="form-select">
+                <select name="category" class="form-select" required>
                     <option th:each="cat : ${categories}"
                             th:value="${cat.name()}"
                             th:text="${cat.display}"
@@ -42,7 +39,6 @@
                 </select>
             </div>
 
-            <!-- Target days -->
             <div class="form-group">
                 <label class="form-label">Target Days: <strong id="targetLabel" th:text="${habit.targetDays > 0 ? habit.targetDays : 21}">21</strong> days</label>
                 <input type="range" name="targetDays" class="form-range"
@@ -54,7 +50,6 @@
                 </div>
             </div>
 
-            <!-- Color picker -->
             <div class="form-group">
                 <label class="form-label">Color Theme</label>
                 <div class="color-picker">
@@ -62,13 +57,12 @@
                          class="color-dot"
                          th:classappend="${habit.color == col or (habit.color == null and col == '#7BA05B')} ? ' selected' : ''"
                          th:style="'background:' + ${col}"
-                         th:onclick="'selectColor(\'' + ${col} + '\')'"></div>
+                         th:attr="data-color=${col}"></div>
                 </div>
                 <input type="hidden" name="color" id="colorInput"
                        th:value="${habit.color != null ? habit.color : '#7BA05B'}"/>
             </div>
 
-            <!-- Actions -->
             <div class="form-actions">
                 <a th:href="@{/habits}" class="btn-secondary">Cancel</a>
                 <button type="submit" class="btn-primary"
@@ -77,14 +71,6 @@
         </form>
     </div>
 </div>
-
-<script>
-function selectColor(hex) {
-    document.getElementById('colorInput').value = hex;
-    document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
-    event.target.classList.add('selected');
-}
-</script>
 
 </th:block>
 </body>

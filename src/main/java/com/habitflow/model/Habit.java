@@ -62,7 +62,6 @@ public class Habit {
 
     private String color = "#7BA05B";
 
-    // Constructors
     public Habit() {}
 
     public Habit(String name, String description, Category category, int targetDays, String color) {
@@ -74,7 +73,6 @@ public class Habit {
         this.createdDate = LocalDate.now();
     }
 
-    // Computed
     public double getProgressPercent() {
         if (targetDays == 0) return 0;
         return Math.min(100.0, (totalCompletions / (double) targetDays) * 100);
@@ -84,7 +82,6 @@ public class Habit {
         return String.format("%.0f", getProgressPercent());
     }
 
-    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

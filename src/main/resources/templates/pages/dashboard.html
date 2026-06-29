@@ -6,13 +6,33 @@
 
 <div class="page">
 
-    <!-- Header -->
     <div class="page-header">
         <div>
             <h1 class="page-title" th:text="${greeting} + ', welcome back 🍵'">Good morning 🍵</h1>
             <p class="page-subtitle" th:text="${today}">Monday, January 1</p>
         </div>
         <a th:href="@{/habits/new}" class="btn-primary">＋ New Habit</a>
+    </div>
+
+    <!-- Level banner -->
+    <div class="level-banner">
+        <div class="level-banner-icon" th:text="${level}">1</div>
+        <div class="level-banner-body">
+            <div class="level-banner-top">
+                <span class="level-banner-title" th:text="${levelLabel}">Seedling</span>
+                <span class="level-banner-badge" th:text="'Level ' + ${level}">Level 1</span>
+            </div>
+            <div class="level-banner-xp" th:text="${levelXp} + ' XP · ' + ${nextLevelAt} + ' XP to next level'">0 XP</div>
+            <div class="level-banner-bar" style="margin-top:10px;">
+                <div class="level-banner-fill" th:style="'width:' + ${levelProgress} + '%'"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Daily quote -->
+    <div class="quote-card">
+        <div class="quote-label">Daily Motivation</div>
+        <div class="quote-text" th:text="'&quot;' + ${dailyQuote} + '&quot;'">Quote</div>
     </div>
 
     <!-- Stat cards -->
@@ -47,36 +67,58 @@
     <section class="section">
         <div class="section-header">
             <h2 class="section-title">Today's Habits</h2>
-            <a th:href="@{/habits}" class="section-link">View all →</a>
+            <a th:href="@{/habits}" class="section-link" th:if="${!habits.isEmpty()}">View all →</a>
         </div>
 
-        <div th:if="${habits.isEmpty()}" class="empty-state">
+        <!-- Empty: no habits -->
+        <div th:if="${habits.isEmpty()}" class="empty-state-card">
             <div class="empty-emoji">🌱</div>
             <div class="empty-title">No habits yet</div>
-            <div class="empty-sub">Start your journey by adding your first habit</div>
+            <div class="empty-sub">Start your journey by adding your first habit. Small steps lead to big changes!</div>
             <a th:href="@{/habits/new}" class="btn-primary">＋ Add your first habit</a>
         </div>
 
-        <div class="habits-list" th:if="${!habits.isEmpty()}">
-            <div th:each="habit : ${habits}">
+        <!-- Empty: all complete -->
+        <div th:if="${allComplete}" class="empty-state-card" style="margin-bottom:16px;">
+            <div class="empty-emoji">🎉</div>
+            <div class="empty-title">All habits complete!</div>
+            <div class="empty-sub">You've checked off every habit today. Enjoy the rest of your day — you earned it.</div>
+        </div>
+
+        <div class="habits-list" th:if="${!habits.isEmpty() and !allComplete}">
+            <div th:each="habit : ${habits}" th:if="${!doneMap[habit.id]}">
                 <th:block th:replace="~{fragments/habit-card :: habitCard(${habit}, ${doneMap[habit.id]}, '/')}"/>
+            </div>
+        </div>
+
+        <!-- Show completed habits collapsed below when partial progress -->
+        <div th:if="${!habits.isEmpty() and !allComplete and todayDone > 0}" style="margin-top:16px;">
+            <div class="section-header" style="margin-bottom:10px;">
+                <h3 class="section-title" style="font-size:13px;color:var(--muted);">Completed today</h3>
+            </div>
+            <div class="habits-list">
+                <div th:each="habit : ${habits}" th:if="${doneMap[habit.id]}">
+                    <th:block th:replace="~{fragments/habit-card :: habitCard(${habit}, true, '/')}"/>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Weekly chart -->
     <section class="section" th:if="${!habits.isEmpty()}">
-        <div class="card">
+        <div class="card chart-card">
             <div class="section-header" style="margin-bottom:20px;">
                 <h2 class="section-title">This Week</h2>
             </div>
             <div class="week-chart">
                 <div th:each="day : ${weekActivity}" class="week-bar-col">
+                    <div class="chart-tooltip" th:text="${day.day + ': ' + day.count + ' habits (' + day.completionRate + '%)'}"></div>
                     <div class="week-bar-count" th:text="${day.count > 0 ? day.count : ''}"></div>
                     <div class="week-bar"
                          th:classappend="${day.isToday} ? ' today' : (${day.count > 0} ? ' done' : '')"
-                         th:style="'height: ' + (8 + ${day.count} * 18) + 'px'"></div>
+                         th:style="'height: ' + (8 + ${day.percent} * 0.9) + 'px'"></div>
                     <div class="week-bar-label" th:text="${day.day}"></div>
+                    <div class="week-bar-pct" th:if="${day.completionRate > 0}" th:text="${day.completionRate} + '%'"></div>
                 </div>
             </div>
         </div>

@@ -24,7 +24,7 @@
         </div>
 
         <div class="habit-meta">
-            <span class="meta-chip">⏱ <span th:text="${habit.currentStreak}"></span> day streak</span>
+            <span class="meta-chip">🔥 <span th:text="${habit.currentStreak}"></span> day streak</span>
             <span class="meta-chip">✓ <span th:text="${habit.totalCompletions}"></span> total</span>
             <span class="meta-pill" th:text="${habit.targetDays} + '-day goal'"></span>
         </div>
@@ -33,7 +33,7 @@
     <form th:action="@{'/habits/' + ${habit.id} + '/toggle'}" method="post">
         <input type="hidden" name="redirect" th:value="${redirectUrl}"/>
         <button type="submit" class="check-btn" th:classappend="${done} ? ' check-btn-done' : ''"
-                th:text="${done} ? '✓' : '○'">○</button>
+                th:text="${done} ? '✓' : '○'" th:attr="aria-label=${done} ? 'Mark undone' : 'Mark done'">○</button>
     </form>
 </div>
 

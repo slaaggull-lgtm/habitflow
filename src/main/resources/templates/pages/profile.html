@@ -12,14 +12,13 @@
         </div>
     </div>
 
-    <!-- Profile hero card -->
     <div class="profile-hero">
         <div class="profile-avatar-section">
             <div class="profile-avatar" id="avatarDisplay">🌱</div>
-            <button class="avatar-change-btn" onclick="toggleAvatarPicker()">Change Avatar</button>
+            <button type="button" class="avatar-change-btn" onclick="toggleAvatarPicker()">Change Avatar</button>
         </div>
         <div class="profile-main-info">
-            <div class="profile-name">HabitFlow User</div>
+            <div class="profile-name" th:text="${displayName}">HabitFlow User</div>
             <div class="profile-since">Member since <span th:text="${memberSince}">today</span></div>
 
             <div class="profile-level-row">
@@ -32,21 +31,19 @@
                     <div class="level-progress-fill" th:style="'width:' + ${levelProgress} + '%'"></div>
                 </div>
                 <span class="level-progress-label"
-                      th:text="${totalCheckins} + ' / ' + ${nextLevelAt} + ' check-ins'">0 / 5</span>
+                      th:text="${totalCheckins} + ' / ' + ${nextLevelAt} + ' check-ins to next level'">0 / 5</span>
             </div>
         </div>
     </div>
 
-    <!-- Avatar picker panel -->
     <div class="avatar-picker-panel" id="avatarPickerPanel" style="display:none;">
         <div class="avatar-picker-title">Choose your avatar</div>
         <div class="avatar-grid">
-            <span th:each="opt : ${avatarOptions}" class="avatar-opt" th:text="${opt}"
-                  th:onclick="'pickAvatar(\'' + ${opt} + '\')'"></span>
+            <button type="button" th:each="opt : ${avatarOptions}" class="avatar-opt"
+                    th:text="${opt}" th:attr="data-avatar=${opt}"></button>
         </div>
     </div>
 
-    <!-- Stats row -->
     <div class="stat-grid" style="margin-top:24px;">
         <div class="stat-card">
             <div class="stat-label">Habits Active</div>
@@ -67,7 +64,6 @@
         </div>
     </div>
 
-    <!-- Recent badges -->
     <section class="section" th:if="${!recentBadges.isEmpty()}">
         <div class="section-header">
             <h2 class="section-title">Recent Badges ✨</h2>
@@ -83,7 +79,6 @@
         </div>
     </section>
 
-    <!-- Category breakdown -->
     <section class="section" th:if="${!categoryStats.isEmpty()}">
         <div class="section-header">
             <h2 class="section-title">Habits by Category</h2>
@@ -102,7 +97,6 @@
         </div>
     </section>
 
-    <!-- Quick actions -->
     <section class="section">
         <div class="section-header">
             <h2 class="section-title">Quick Actions</h2>
@@ -132,25 +126,6 @@
     </section>
 
 </div>
-
-<script>
-function toggleAvatarPicker() {
-    const p = document.getElementById('avatarPickerPanel');
-    p.style.display = p.style.display === 'none' ? 'block' : 'none';
-}
-function pickAvatar(emoji) {
-    document.getElementById('avatarDisplay').textContent = emoji;
-    document.getElementById('avatarPickerPanel').style.display = 'none';
-    localStorage.setItem('hf_avatar', emoji);
-}
-(function() {
-    const saved = localStorage.getItem('hf_avatar');
-    if (saved) {
-        const el = document.getElementById('avatarDisplay');
-        if (el) el.textContent = saved;
-    }
-})();
-</script>
 
 </th:block>
 </body>

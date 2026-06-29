@@ -14,30 +14,32 @@
 
     <div class="settings-layout">
 
-        <!-- Left column -->
         <div class="settings-col">
-
             <div class="settings-section">
                 <div class="settings-section-title">Preferences</div>
                 <div class="settings-row">
                     <div class="settings-row-info">
                         <div class="settings-row-label">Compact habit list</div>
-                        <div class="settings-row-sub">Show more habits with less padding</div>
+                        <div class="settings-row-sub">Show more habits with less padding on list views</div>
                     </div>
-                    <label class="toggle">
-                        <input type="checkbox" id="compactToggle" onchange="setSetting('compact', this.checked)"/>
-                        <span class="toggle-slider"></span>
-                    </label>
+                    <div class="settings-row-control">
+                        <label class="toggle">
+                            <input type="checkbox" id="compactToggle" onchange="setSetting('compact', this.checked)"/>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
                 </div>
                 <div class="settings-row">
                     <div class="settings-row-info">
                         <div class="settings-row-label">Confirm before delete</div>
-                        <div class="settings-row-sub">Show a dialog when deleting habits</div>
+                        <div class="settings-row-sub">Show a confirmation dialog when deleting habits</div>
                     </div>
-                    <label class="toggle">
-                        <input type="checkbox" id="confirmDelete" checked onchange="setSetting('confirmDelete', this.checked)"/>
-                        <span class="toggle-slider"></span>
-                    </label>
+                    <div class="settings-row-control">
+                        <label class="toggle">
+                            <input type="checkbox" id="confirmDelete" checked onchange="setSetting('confirmDelete', this.checked)"/>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
                 </div>
             </div>
 
@@ -46,17 +48,17 @@
                 <div class="settings-row">
                     <div class="settings-row-info">
                         <div class="settings-row-label">Export habits to CSV</div>
-                        <div class="settings-row-sub">Download all your habits and streaks</div>
+                        <div class="settings-row-sub">Download all your habits, streaks, and completion data</div>
                     </div>
-                    <a th:href="@{/export/habits}" class="btn-secondary" style="font-size:13px;padding:8px 14px;">
-                        Export CSV
-                    </a>
+                    <div class="settings-row-control">
+                        <a th:href="@{/export/habits}" class="btn-secondary" style="font-size:13px;padding:8px 14px;">
+                            Export CSV
+                        </a>
+                    </div>
                 </div>
             </div>
-
         </div>
 
-        <!-- Right column: About -->
         <div class="settings-col">
             <div class="settings-section">
                 <div class="settings-section-title">About HabitFlow</div>
@@ -64,12 +66,12 @@
                     <div class="about-logo">🌱</div>
                     <div class="about-name">HabitFlow</div>
                     <div class="about-version">Version 1.0</div>
-                    <div class="about-desc">A habit tracker built to help you grow, one day at a time.</div>
+                    <div class="about-desc">A matcha-inspired habit tracker built to help you grow, one day at a time.</div>
                     <div class="about-stack">
                         <span class="stack-chip">Spring Boot 3</span>
                         <span class="stack-chip">Thymeleaf</span>
                         <span class="stack-chip">SQLite</span>
-                        <span class="stack-chip">Render</span>
+                        <span class="stack-chip">Java 17</span>
                     </div>
                 </div>
             </div>
@@ -77,55 +79,22 @@
             <div class="settings-section">
                 <div class="settings-section-title">Level Guide</div>
                 <div class="level-guide">
-                    <div class="level-guide-row">
-                        <span class="lg-lv">Lv 1</span><span class="lg-name">Seedling</span><span class="lg-req">0 check-ins</span>
-                    </div>
-                    <div class="level-guide-row">
-                        <span class="lg-lv">Lv 2</span><span class="lg-name">Sprout</span><span class="lg-req">5+</span>
-                    </div>
-                    <div class="level-guide-row">
-                        <span class="lg-lv">Lv 3</span><span class="lg-name">Sapling</span><span class="lg-req">10+</span>
-                    </div>
-                    <div class="level-guide-row">
-                        <span class="lg-lv">Lv 4</span><span class="lg-name">Young Tree</span><span class="lg-req">20+</span>
-                    </div>
-                    <div class="level-guide-row">
-                        <span class="lg-lv">Lv 5</span><span class="lg-name">Grove Keeper</span><span class="lg-req">30+</span>
-                    </div>
-                    <div class="level-guide-row">
-                        <span class="lg-lv">Lv 6</span><span class="lg-name">Forest Walker</span><span class="lg-req">50+</span>
-                    </div>
-                    <div class="level-guide-row">
-                        <span class="lg-lv">Lv 7</span><span class="lg-name">Moss Elder</span><span class="lg-req">75+</span>
-                    </div>
-                    <div class="level-guide-row">
-                        <span class="lg-lv">Lv 8</span><span class="lg-name">Ancient Root</span><span class="lg-req">100+</span>
-                    </div>
-                    <div class="level-guide-row">
-                        <span class="lg-lv">Lv 9</span><span class="lg-name">Canopy Master</span><span class="lg-req">200+</span>
-                    </div>
-                    <div class="level-guide-row">
-                        <span class="lg-lv">Lv 10</span><span class="lg-name">Forest Spirit</span><span class="lg-req">500+</span>
-                    </div>
+                    <div class="level-guide-row"><span class="lg-lv">Lv 1</span><span class="lg-name">Seedling</span><span class="lg-req">0 check-ins</span></div>
+                    <div class="level-guide-row"><span class="lg-lv">Lv 2</span><span class="lg-name">Sprout</span><span class="lg-req">5+</span></div>
+                    <div class="level-guide-row"><span class="lg-lv">Lv 3</span><span class="lg-name">Sapling</span><span class="lg-req">10+</span></div>
+                    <div class="level-guide-row"><span class="lg-lv">Lv 4</span><span class="lg-name">Young Tree</span><span class="lg-req">20+</span></div>
+                    <div class="level-guide-row"><span class="lg-lv">Lv 5</span><span class="lg-name">Grove Keeper</span><span class="lg-req">30+</span></div>
+                    <div class="level-guide-row"><span class="lg-lv">Lv 6</span><span class="lg-name">Forest Walker</span><span class="lg-req">50+</span></div>
+                    <div class="level-guide-row"><span class="lg-lv">Lv 7</span><span class="lg-name">Moss Elder</span><span class="lg-req">75+</span></div>
+                    <div class="level-guide-row"><span class="lg-lv">Lv 8</span><span class="lg-name">Ancient Root</span><span class="lg-req">100+</span></div>
+                    <div class="level-guide-row"><span class="lg-lv">Lv 9</span><span class="lg-name">Canopy Master</span><span class="lg-req">200+</span></div>
+                    <div class="level-guide-row"><span class="lg-lv">Lv 10</span><span class="lg-name">Forest Spirit</span><span class="lg-req">500+</span></div>
                 </div>
             </div>
         </div>
 
     </div>
 </div>
-
-<script>
-function setSetting(key, val) {
-    localStorage.setItem('hf_' + key, val);
-    if (key === 'compact') document.body.classList.toggle('compact', val);
-}
-(function() {
-    if (localStorage.getItem('hf_compact') === 'true') {
-        document.getElementById('compactToggle').checked = true;
-        document.body.classList.add('compact');
-    }
-})();
-</script>
 
 </th:block>
 </body>

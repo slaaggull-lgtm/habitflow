@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -19,8 +20,6 @@ public class HabitService {
     @Autowired private HabitRepository habitRepo;
     @Autowired private HabitLogRepository logRepo;
     @Autowired private BadgeRepository badgeRepo;
-
-    // ── Habits ──────────────────────────────────────────────
 
     public List<Habit> getAllHabits() {
         return habitRepo.findByActiveTrueOrderByIdAsc();
@@ -56,8 +55,6 @@ public class HabitService {
         habitRepo.save(h);
     }
 
-    // ── Check-ins ────────────────────────────────────────────
-
     @Transactional
     public boolean toggleToday(Long habitId) {
         LocalDate today = LocalDate.now();
@@ -79,10 +76,6 @@ public class HabitService {
 
     public boolean isCompletedToday(Long habitId) {
         return logRepo.existsByHabitIdAndLogDate(habitId, LocalDate.now());
-    }
-
-    public boolean isCompleted(Long habitId, LocalDate date) {
-        return logRepo.existsByHabitIdAndLogDate(habitId, date);
     }
 
     private void recalculateStreak(Habit habit) {
@@ -116,25 +109,48 @@ public class HabitService {
             award(habit, Badge.Type.MATCHA_ZEN);
         }
 
-        long activeCount = habitRepo.countByActiveTrue();
-        if (activeCount >= 5) award(habit, Badge.Type.MULTI_HABIT);
+        if (habitRepo.countByActiveTrue() >= 5) {
+            awardGlobal(Badge.Type.MULTI_HABIT);
+        }
 
-        // Perfect week check
-        LocalDate monday = LocalDate.now().with(java.time.DayOfWeek.MONDAY);
+        LocalDate monday = LocalDate.now().with(DayOfWeek.MONDAY);
         List<Habit> all = getAllHabits();
-        boolean perfectWeek = all.stream().allMatch(h ->
-            logRepo.countByHabitIdAndLogDateBetween(h.getId(), monday, monday.plusDays(6)) >= 7
-        );
-        if (perfectWeek) award(habit, Badge.Type.PERFECT_WEEK);
+        if (!all.isEmpty()) {
+            boolean perfectWeek = all.stream().allMatch(h ->
+                logRepo.countByHabitIdAndLogDateBetween(h.getId(), monday, monday.plusDays(6)) >= 7
+            );
+            if (perfectWeek) awardGlobal(Badge.Type.PERFECT_WEEK);
+        }
     }
 
     private void award(Habit habit, Badge.Type type) {
+        if (Badge.isGlobalType(type)) {
+            awardGlobal(type);
+            return;
+        }
         if (!badgeRepo.existsByHabitIdAndType(habit.getId(), type)) {
             badgeRepo.save(new Badge(habit.getId(), type));
         }
     }
 
-    // ── Stats ────────────────────────────────────────────────
+    private void awardGlobal(Badge.Type type) {
+        if (!badgeRepo.existsByType(type)) {
+            badgeRepo.save(new Badge(null, type));
+        }
+    }
+
+    /** Remove duplicate badge records, keeping the earliest earned per type. */
+    @Transactional
+    public void cleanupDuplicateBadges() {
+        for (Badge.Type type : Badge.Type.values()) {
+            List<Badge> dupes = badgeRepo.findByType(type);
+            if (dupes.size() <= 1) continue;
+            dupes.sort(Comparator.comparing(Badge::getEarnedDate));
+            for (int i = 1; i < dupes.size(); i++) {
+                badgeRepo.delete(dupes.get(i));
+            }
+        }
+    }
 
     public int getTodayCompletedCount() {
         return (int) logRepo.countDistinctHabitsByDate(LocalDate.now());
@@ -150,35 +166,59 @@ public class HabitService {
                 .mapToInt(Habit::getTotalCompletions).sum();
     }
 
-    public List<Badge> getAllBadges() {
-        return badgeRepo.findAllByOrderByEarnedDateDesc();
+    /** One badge per type for display (most recently earned). */
+    public List<Badge> getUniqueBadges() {
+        List<Badge> all = badgeRepo.findAllByOrderByEarnedDateDesc();
+        Map<Badge.Type, Badge> unique = new LinkedHashMap<>();
+        for (Badge b : all) {
+            unique.putIfAbsent(b.getType(), b);
+        }
+        return new ArrayList<>(unique.values());
     }
 
     public long getBadgeCount() {
-        return badgeRepo.count();
+        return getUniqueBadges().size();
     }
 
-    /** Returns list of {dayLabel, count} for last N days */
     public List<Map<String, Object>> getDailyActivity(int days) {
         List<Map<String, Object>> result = new ArrayList<>();
         LocalDate today = LocalDate.now();
+        int maxCount = 1;
+        List<Long> counts = new ArrayList<>();
+
         for (int i = days - 1; i >= 0; i--) {
             LocalDate date = today.minusDays(i);
             long count = logRepo.countDistinctHabitsByDate(date);
+            counts.add(count);
+            if (count > maxCount) maxCount = (int) count;
+        }
+
+        for (int i = days - 1; i >= 0; i--) {
+            LocalDate date = today.minusDays(i);
+            long count = counts.get(days - 1 - i);
             Map<String, Object> entry = new LinkedHashMap<>();
             entry.put("date", date.toString());
             entry.put("label", date.getMonthValue() + "/" + date.getDayOfMonth());
             entry.put("count", count);
+            entry.put("percent", maxCount > 0 ? (int) Math.round((double) count / maxCount * 100) : 0);
             result.add(entry);
         }
         return result;
     }
 
-    /** Returns list of {day, count} for current week (Mon–Sun) */
     public List<Map<String, Object>> getWeekActivity() {
         List<Map<String, Object>> result = new ArrayList<>();
-        LocalDate monday = LocalDate.now().with(java.time.DayOfWeek.MONDAY);
-        String[] days = {"Mon","Tue","Wed","Thu","Fri","Sat","Sun"};
+        LocalDate monday = LocalDate.now().with(DayOfWeek.MONDAY);
+        String[] days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+        int totalHabits = getAllHabits().size();
+        long maxCount = 1;
+
+        for (int i = 0; i < 7; i++) {
+            LocalDate date = monday.plusDays(i);
+            long count = logRepo.countDistinctHabitsByDate(date);
+            if (count > maxCount) maxCount = count;
+        }
+
         for (int i = 0; i < 7; i++) {
             LocalDate date = monday.plusDays(i);
             long count = logRepo.countDistinctHabitsByDate(date);
@@ -186,6 +226,9 @@ public class HabitService {
             entry.put("day", days[i]);
             entry.put("count", count);
             entry.put("isToday", date.equals(LocalDate.now()));
+            entry.put("percent", maxCount > 0 ? (int) Math.round((double) count / maxCount * 100) : 0);
+            entry.put("completionRate", totalHabits > 0
+                    ? (int) Math.round((double) count / totalHabits * 100) : 0);
             result.add(entry);
         }
         return result;
@@ -194,7 +237,7 @@ public class HabitService {
     public double getWeekCompletionRate() {
         List<Habit> habits = getAllHabits();
         if (habits.isEmpty()) return 0;
-        LocalDate monday = LocalDate.now().with(java.time.DayOfWeek.MONDAY);
+        LocalDate monday = LocalDate.now().with(DayOfWeek.MONDAY);
         long actual = 0;
         for (Habit h : habits) {
             actual += logRepo.countByHabitIdAndLogDateBetween(h.getId(), monday, monday.plusDays(6));
@@ -203,9 +246,30 @@ public class HabitService {
         return possible == 0 ? 0 : Math.round((double) actual / possible * 100);
     }
 
-    /** Seeds default habits if DB is empty */
+    /** Per-habit stats for the statistics page. */
+    public List<Map<String, Object>> getHabitBreakdown() {
+        List<Habit> habits = getAllHabits();
+        LocalDate monday = LocalDate.now().with(DayOfWeek.MONDAY);
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        for (Habit h : habits) {
+            long weekCompletions = logRepo.countByHabitIdAndLogDateBetween(
+                    h.getId(), monday, monday.plusDays(6));
+            int weekPercent = (int) Math.round((double) weekCompletions / 7 * 100);
+
+            Map<String, Object> row = new LinkedHashMap<>();
+            row.put("habit", h);
+            row.put("weekCompletions", weekCompletions);
+            row.put("weekPercent", weekPercent);
+            row.put("goalPercent", (int) Math.round(h.getProgressPercent()));
+            result.add(row);
+        }
+        return result;
+    }
+
     @Transactional
     public void seedIfEmpty() {
+        cleanupDuplicateBadges();
         if (habitRepo.count() == 0) {
             createHabit("Drink Water", "8 glasses of water per day",
                     Habit.Category.HEALTH, 30, "#6BAD8A");

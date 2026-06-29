@@ -13,20 +13,16 @@
         </div>
     </div>
 
-    <!-- Summary -->
     <div class="badge-summary">
-        <div class="badge-summary-progress">
-            <div class="bsp-text">
-                <span class="bsp-count" th:text="${earnedCount}">0</span>
-                <span class="bsp-total" th:text="' of ' + ${totalCount} + ' badges earned'"> of 10 badges earned</span>
-            </div>
-            <div class="bsp-bar">
-                <div class="bsp-fill" th:style="'width:' + (${totalCount} > 0 ? (${earnedCount} * 100 / ${totalCount}) : 0) + '%'"></div>
-            </div>
+        <div class="bsp-text">
+            <span class="bsp-count" th:text="${earnedCount}">0</span>
+            <span class="bsp-total" th:text="' of ' + ${totalCount} + ' badges earned'"> of 10 badges earned</span>
+        </div>
+        <div class="bsp-bar">
+            <div class="bsp-fill" th:style="'width:' + (${totalCount} > 0 ? (${earnedCount} * 100 / ${totalCount}) : 0) + '%'"></div>
         </div>
     </div>
 
-    <!-- Earned -->
     <section class="section" th:if="${!earnedBadges.isEmpty()}">
         <h2 class="section-title" style="margin-bottom:14px;">Earned ✨</h2>
         <div class="badges-grid">
@@ -39,7 +35,6 @@
         </div>
     </section>
 
-    <!-- Locked -->
     <section class="section" th:if="${!lockedTypes.isEmpty()}">
         <h2 class="section-title" style="margin-bottom:14px;">Locked 🔒</h2>
         <div class="badges-grid">

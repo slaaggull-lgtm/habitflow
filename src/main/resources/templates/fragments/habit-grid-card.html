@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="habitGridCard(habit, done)"
+     class="habit-grid-card"
+     th:classappend="${done} ? ' habit-grid-card-done' : ''"
+     th:style="'--card-accent:' + ${habit.color}">
+    <div class="hgc-header">
+        <div class="hgc-title-wrap">
+            <div class="hgc-name" th:text="${habit.name}">Habit</div>
+            <div class="hgc-desc"
+                 th:if="${habit.description != null and !habit.description.isEmpty()}"
+                 th:text="${habit.description}"></div>
+        </div>
+        <span th:if="${done}" class="done-pill">Done</span>
+    </div>
+
+    <span class="category-badge">
+        <span th:text="${habit.category.emoji}"></span>
+        <span th:text="${habit.category.label}"></span>
+    </span>
+
+    <div class="hgc-streak">
+        <span>🔥</span>
+        <span class="hgc-streak-num" th:text="${habit.currentStreak}">0</span>
+        <span>day streak</span>
+    </div>
+
+    <div>
+        <div class="hgc-progress-label">
+            <span>Progress</span>
+            <span th:text="${habit.progressPercentFormatted} + '%'">0%</span>
+        </div>
+        <div class="hgc-progress-bar">
+            <div class="hgc-progress-fill"
+                 th:style="'width:' + ${habit.progressPercent} + '%; background:' + ${habit.color}"></div>
+        </div>
+    </div>
+
+    <div class="hgc-goal" th:text="'🎯 ' + ${habit.targetDays} + '-day goal · ' + ${habit.totalCompletions} + ' check-ins'"></div>
+
+    <div class="hgc-footer">
+        <form th:action="@{'/habits/' + ${habit.id} + '/toggle'}" method="post">
+            <input type="hidden" name="redirect" value="/habits"/>
+            <button type="submit" class="check-btn btn-check-habit" th:classappend="${done} ? ' check-btn-done' : ''"
+                    th:text="${done} ? '✓ Done' : 'Mark Done'">
+                Mark Done
+            </button>
+        </form>
+        <div class="hgc-actions">
+            <a th:href="@{'/habits/' + ${habit.id} + '/edit'}" class="btn-icon" title="Edit">✏️</a>
+            <form th:action="@{'/habits/' + ${habit.id} + '/delete'}" method="post"
+                  th:attr="data-confirm-delete=true, data-habit-name=${habit.name}"
+                  style="display:inline;">
+                <button type="submit" class="btn-icon btn-icon-danger" title="Delete">🗑</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

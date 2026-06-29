@@ -9,6 +9,5 @@ import java.util.List;
 @Repository
 public interface HabitRepository extends JpaRepository<Habit, Long> {
     List<Habit> findByActiveTrueOrderByIdAsc();
-    List<Habit> findByActiveTrue();
     long countByActiveTrue();
 }

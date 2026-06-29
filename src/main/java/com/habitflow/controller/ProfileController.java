@@ -3,6 +3,7 @@ package com.habitflow.controller;
 import com.habitflow.model.Badge;
 import com.habitflow.model.Habit;
 import com.habitflow.service.HabitService;
+import com.habitflow.service.LevelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -18,24 +19,17 @@ import java.util.stream.Collectors;
 @Controller
 public class ProfileController {
 
-    @Autowired
-    private HabitService service;
+    @Autowired private HabitService service;
+    @Autowired private LevelService levelService;
 
     @GetMapping("/profile")
     public String profile(Model model) {
         List<Habit> habits = service.getAllHabits();
-        List<Badge> badges = service.getAllBadges();
+        List<Badge> badges = service.getUniqueBadges();
 
         int totalCheckins = service.getTotalCompletionsOverall();
-        int level = calculateLevel(totalCheckins);
-        String levelLabel = getLevelLabel(level);
-        int nextLevelAt = nextLevelThreshold(level);
-        int prevLevelAt = prevLevelThreshold(level);
-        int levelProgress = nextLevelAt > prevLevelAt
-                ? (int) Math.min(100, (double)(totalCheckins - prevLevelAt) / (nextLevelAt - prevLevelAt) * 100)
-                : 100;
+        LevelService.LevelInfo level = levelService.getLevelInfo(totalCheckins);
 
-        // Category stats — computed in Java, not Thymeleaf
         Map<Habit.Category, Long> catCounts = habits.stream()
                 .collect(Collectors.groupingBy(Habit::getCategory, Collectors.counting()));
         long maxCount = catCounts.values().stream().mapToLong(v -> v).max().orElse(1);
@@ -49,7 +43,7 @@ public class ProfileController {
             cs.put("percent", (int) Math.round((double) e.getValue() / maxCount * 100));
             categoryStats.add(cs);
         }
-        categoryStats.sort((a, b) -> (Long) b.get("count") > (Long) a.get("count") ? 1 : -1);
+        categoryStats.sort((a, b) -> Long.compare((Long) b.get("count"), (Long) a.get("count")));
 
         List<Badge> recentBadges = badges.stream().limit(6).collect(Collectors.toList());
 
@@ -60,30 +54,25 @@ public class ProfileController {
                 .map(d -> d.format(DateTimeFormatter.ofPattern("MMMM yyyy")))
                 .orElse(LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM yyyy")));
 
-        int bestStreak = service.getLongestStreakOverall();
-        long todayDone = (long) service.getTodayCompletedCount();
-
-        List<String> avatarOptions = List.of(
-            "🌱", "🌿", "🍵", "🌸", "🍃", "🌲", "🦋", "🐝",
-            "🌻", "🌙", "⭐", "🎯", "🧘", "🏃", "📚", "🎨"
-        );
-
         model.addAttribute("displayName", "HabitFlow User");
         model.addAttribute("avatar", "🌱");
         model.addAttribute("memberSince", memberSince);
-        model.addAttribute("level", level);
-        model.addAttribute("levelLabel", levelLabel);
-        model.addAttribute("levelProgress", levelProgress);
-        model.addAttribute("nextLevelAt", nextLevelAt);
+        model.addAttribute("level", level.level());
+        model.addAttribute("levelLabel", level.label());
+        model.addAttribute("levelProgress", level.progressPercent());
+        model.addAttribute("nextLevelAt", level.nextThreshold());
         model.addAttribute("totalHabits", habits.size());
         model.addAttribute("totalCheckins", totalCheckins);
-        model.addAttribute("bestStreak", bestStreak);
-        model.addAttribute("todayDone", todayDone);
+        model.addAttribute("bestStreak", service.getLongestStreakOverall());
+        model.addAttribute("todayDone", service.getTodayCompletedCount());
         model.addAttribute("badgeCount", badges.size());
         model.addAttribute("totalBadgeCount", Badge.Type.values().length);
         model.addAttribute("recentBadges", recentBadges);
         model.addAttribute("categoryStats", categoryStats);
-        model.addAttribute("avatarOptions", avatarOptions);
+        model.addAttribute("avatarOptions", List.of(
+                "🌱", "🌿", "🍵", "🌸", "🍃", "🌲", "🦋", "🐝",
+                "🌻", "🌙", "⭐", "🎯", "🧘", "🏃", "📚", "🎨"
+        ));
         model.addAttribute("activePage", "profile");
         return "pages/profile";
     }
@@ -117,44 +106,6 @@ public class ProfileController {
     @GetMapping("/health")
     public ResponseEntity<String> health() {
         return ResponseEntity.ok("OK");
-    }
-
-    private int calculateLevel(int c) {
-        if (c >= 500) return 10;
-        if (c >= 200) return 9;
-        if (c >= 100) return 8;
-        if (c >= 75)  return 7;
-        if (c >= 50)  return 6;
-        if (c >= 30)  return 5;
-        if (c >= 20)  return 4;
-        if (c >= 10)  return 3;
-        if (c >= 5)   return 2;
-        return 1;
-    }
-
-    private int nextLevelThreshold(int level) {
-        return switch (level) {
-            case 1 -> 5; case 2 -> 10; case 3 -> 20; case 4 -> 30;
-            case 5 -> 50; case 6 -> 75; case 7 -> 100; case 8 -> 200;
-            case 9 -> 500; default -> 500;
-        };
-    }
-
-    private int prevLevelThreshold(int level) {
-        return switch (level) {
-            case 1 -> 0; case 2 -> 5; case 3 -> 10; case 4 -> 20;
-            case 5 -> 30; case 6 -> 50; case 7 -> 75; case 8 -> 100;
-            case 9 -> 200; default -> 500;
-        };
-    }
-
-    private String getLevelLabel(int level) {
-        return switch (level) {
-            case 1 -> "Seedling"; case 2 -> "Sprout"; case 3 -> "Sapling";
-            case 4 -> "Young Tree"; case 5 -> "Grove Keeper"; case 6 -> "Forest Walker";
-            case 7 -> "Moss Elder"; case 8 -> "Ancient Root"; case 9 -> "Canopy Master";
-            case 10 -> "Forest Spirit"; default -> "Seedling";
-        };
     }
 
     private String escape(String s) {

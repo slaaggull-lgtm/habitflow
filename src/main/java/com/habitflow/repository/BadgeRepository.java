@@ -9,6 +9,7 @@ import java.util.List;
 @Repository
 public interface BadgeRepository extends JpaRepository<Badge, Long> {
     boolean existsByHabitIdAndType(Long habitId, Badge.Type type);
+    boolean existsByType(Badge.Type type);
     List<Badge> findAllByOrderByEarnedDateDesc();
-    long count();
+    List<Badge> findByType(Badge.Type type);
 }
