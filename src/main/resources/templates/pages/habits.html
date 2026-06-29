@@ -8,22 +8,21 @@
 
     <div class="page-header">
         <div>
-            <h1 class="page-title">My Habits</h1>
+            <h1 class="page-title">✅ My Habits</h1>
             <p class="page-subtitle">Manage and track all your habits</p>
         </div>
-        <a th:href="@{/habits/new}" class="btn-primary">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:14px;height:14px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            New Habit
-        </a>
+        <a th:href="@{/habits/new}" class="btn-primary">＋ New Habit</a>
     </div>
 
-    <!-- Summary row -->
-    <div class="habits-summary-row" th:if="${!habits.isEmpty()}">
-        <div class="summary-chip">
-            <strong th:text="${habits.size()}">0</strong> habits
+    <!-- Progress banner -->
+    <div class="progress-banner" th:if="${totalCount > 0}">
+        <div class="progress-banner-text">
+            <span class="progress-banner-num" th:text="${doneCount}">0</span>
+            <span class="progress-banner-label"> of <span th:text="${totalCount}">0</span> habits completed today</span>
         </div>
-        <div class="summary-chip">
-            <strong th:text="${doneMap.values().stream().filter(v -> v).count()}">0</strong> done today
+        <div class="progress-banner-bar">
+            <div class="progress-banner-fill"
+                 th:style="'width:' + (${totalCount} > 0 ? (${doneCount} * 100 / ${totalCount}) : 0) + '%'"></div>
         </div>
     </div>
 
@@ -39,31 +38,82 @@
 
     <!-- Empty state -->
     <div th:if="${habits.isEmpty()}" class="empty-state">
-        <div class="empty-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="width:48px;height:48px;opacity:0.35;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        </div>
-        <div class="empty-title">No habits here</div>
-        <div class="empty-sub">Try a different filter or add a new habit</div>
-        <a th:href="@{/habits/new}" class="btn-primary">＋ Add Habit</a>
+        <div class="empty-emoji">🌱</div>
+        <div class="empty-title">No habits here yet</div>
+        <div class="empty-sub">Add your first habit to get started on your growth journey</div>
+        <a th:href="@{/habits/new}" class="btn-primary">＋ Add Your First Habit</a>
     </div>
 
-    <!-- Habits list -->
-    <div class="habits-list" th:if="${!habits.isEmpty()}">
-        <div th:each="habit : ${habits}" class="habit-row-wrap">
-            <th:block th:replace="~{fragments/habit-card :: habitCard(${habit}, ${doneMap[habit.id]}, '/habits')}"/>
-            <!-- Edit / Delete overlay buttons -->
-            <div class="habit-actions">
-                <a th:href="@{'/habits/' + ${habit.id} + '/edit'}" class="action-btn edit-btn" title="Edit">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                </a>
-                <form th:action="@{'/habits/' + ${habit.id} + '/delete'}" method="post"
-                      onsubmit="return confirm('Delete this habit?')">
-                    <button type="submit" class="action-btn delete-btn" title="Delete">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+    <!-- Habits table-style list -->
+    <div class="habits-full-list" th:if="${!habits.isEmpty()}">
+
+        <div class="habit-list-header">
+            <span class="hlh-name">Habit</span>
+            <span class="hlh-streak">Streak</span>
+            <span class="hlh-progress">Progress</span>
+            <span class="hlh-total">Check-ins</span>
+            <span class="hlh-actions">Actions</span>
+        </div>
+
+        <div th:each="habit : ${habits}" class="habit-full-row" th:classappend="${doneMap[habit.id]} ? ' habit-full-done' : ''">
+
+            <!-- Color bar -->
+            <div class="hfr-color" th:style="'background:' + ${habit.color}"></div>
+
+            <!-- Name + category -->
+            <div class="hfr-name">
+                <span class="hfr-emoji" th:text="${habit.category.emoji}"></span>
+                <div class="hfr-name-info">
+                    <div class="hfr-title" th:text="${habit.name}"></div>
+                    <div class="hfr-cat" th:text="${habit.category.label}"></div>
+                </div>
+                <span th:if="${doneMap[habit.id]}" class="done-pill">Done</span>
+            </div>
+
+            <!-- Streak -->
+            <div class="hfr-streak">
+                <div class="streak-val" th:text="${habit.currentStreak}">0</div>
+                <div class="streak-sub">days</div>
+            </div>
+
+            <!-- Progress -->
+            <div class="hfr-progress">
+                <div class="hfr-progress-wrap">
+                    <div class="mini-progress-bar">
+                        <div class="mini-progress-fill"
+                             th:style="'width:' + ${habit.progressPercent} + '%; background:' + ${habit.color}"></div>
+                    </div>
+                    <span class="mini-pct" th:text="${habit.progressPercentFormatted} + '%'">0%</span>
+                </div>
+                <div class="hfr-goal" th:text="${habit.targetDays} + '-day goal'"></div>
+            </div>
+
+            <!-- Total completions -->
+            <div class="hfr-total">
+                <div class="total-val" th:text="${habit.totalCompletions}">0</div>
+                <div class="total-sub">total</div>
+            </div>
+
+            <!-- Actions -->
+            <div class="hfr-actions">
+                <!-- Toggle -->
+                <form th:action="@{'/habits/' + ${habit.id} + '/toggle'}" method="post" style="display:inline;">
+                    <input type="hidden" name="redirect" value="/habits"/>
+                    <button type="submit" class="act-check" th:classappend="${doneMap[habit.id]} ? ' act-check-done' : ''"
+                            th:title="${doneMap[habit.id]} ? 'Mark undone' : 'Mark done'">
+                        <span th:text="${doneMap[habit.id]} ? '✓' : '○'">○</span>
                     </button>
+                </form>
+                <!-- Edit -->
+                <a th:href="@{'/habits/' + ${habit.id} + '/edit'}" class="act-btn" title="Edit">✏️</a>
+                <!-- Delete -->
+                <form th:action="@{'/habits/' + ${habit.id} + '/delete'}" method="post" style="display:inline;"
+                      onsubmit="return confirm('Delete this habit? This cannot be undone.')">
+                    <button type="submit" class="act-btn act-delete" title="Delete">🗑</button>
                 </form>
             </div>
         </div>
+
     </div>
 
 </div>

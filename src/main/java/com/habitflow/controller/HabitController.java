@@ -28,8 +28,7 @@ public class HabitController {
         String greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
         model.addAttribute("greeting", greeting);
-        model.addAttribute("today", LocalDate.now().format(
-                DateTimeFormatter.ofPattern("EEEE, MMMM d")));
+        model.addAttribute("today", LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, MMMM d")));
         model.addAttribute("habits", habits);
         model.addAttribute("todayDone", service.getTodayCompletedCount());
         model.addAttribute("totalHabits", habits.size());
@@ -39,7 +38,6 @@ public class HabitController {
         model.addAttribute("weekActivity", service.getWeekActivity());
         model.addAttribute("activePage", "dashboard");
 
-        // Mark which habits are done today
         Map<Long, Boolean> doneMap = new HashMap<>();
         for (Habit h : habits) doneMap.put(h.getId(), service.isCompletedToday(h.getId()));
         model.addAttribute("doneMap", doneMap);
@@ -57,10 +55,18 @@ public class HabitController {
                 all.stream().filter(h -> h.getCategory().getLabel().equalsIgnoreCase(filter)).toList();
 
         Map<Long, Boolean> doneMap = new HashMap<>();
-        for (Habit h : all) doneMap.put(h.getId(), service.isCompletedToday(h.getId()));
+        int doneCount = 0;
+        for (Habit h : all) {
+            boolean done = service.isCompletedToday(h.getId());
+            doneMap.put(h.getId(), done);
+            if (done) doneCount++;
+        }
 
         model.addAttribute("habits", filtered);
+        model.addAttribute("allHabits", all);
         model.addAttribute("doneMap", doneMap);
+        model.addAttribute("doneCount", doneCount);
+        model.addAttribute("totalCount", all.size());
         model.addAttribute("categories", Habit.Category.values());
         model.addAttribute("activeFilter", filter);
         model.addAttribute("activePage", "habits");
@@ -75,7 +81,8 @@ public class HabitController {
         model.addAttribute("categories", Habit.Category.values());
         model.addAttribute("palette", List.of(
                 "#6BAD8A","#7BA05B","#8B9D6A","#A8C5A0","#5D8A6B",
-                "#B5C8A0","#4A7B5E","#C4D9BC","#3D6B4F","#9AB88A"
+                "#B5C8A0","#4A7B5E","#C4D9BC","#3D6B4F","#9AB88A",
+                "#6B8EAD","#8AADAD","#AD8A6B","#8A6BAD","#AD6B8A"
         ));
         model.addAttribute("activePage", "habits");
         model.addAttribute("editMode", false);
@@ -87,7 +94,8 @@ public class HabitController {
                                @RequestParam(required = false, defaultValue = "") String description,
                                @RequestParam String category,
                                @RequestParam int targetDays,
-                               @RequestParam(defaultValue = "#7BA05B") String color) {
+                               @RequestParam(defaultValue = "#7BA05B") String color,
+                               @RequestParam(required = false, defaultValue = "DAILY") String frequency) {
         service.createHabit(name, description,
                 Habit.Category.valueOf(category), targetDays, color);
         return "redirect:/habits";
@@ -100,7 +108,8 @@ public class HabitController {
         model.addAttribute("categories", Habit.Category.values());
         model.addAttribute("palette", List.of(
                 "#6BAD8A","#7BA05B","#8B9D6A","#A8C5A0","#5D8A6B",
-                "#B5C8A0","#4A7B5E","#C4D9BC","#3D6B4F","#9AB88A"
+                "#B5C8A0","#4A7B5E","#C4D9BC","#3D6B4F","#9AB88A",
+                "#6B8EAD","#8AADAD","#AD8A6B","#8A6BAD","#AD6B8A"
         ));
         model.addAttribute("activePage", "habits");
         model.addAttribute("editMode", true);
@@ -139,14 +148,21 @@ public class HabitController {
     @GetMapping("/statistics")
     public String statistics(Model model) {
         List<Habit> habits = service.getAllHabits();
-        long activeStreaks = habits.stream().filter(h -> h.getCurrentStreak() > 0).count();
+
+        // All computed in Java — no stream lambdas in Thymeleaf
+        int activeStreaks = 0;
+        for (Habit h : habits) {
+            if (h.getCurrentStreak() > 0) activeStreaks++;
+        }
 
         model.addAttribute("habits", habits);
         model.addAttribute("totalHabits", habits.size());
         model.addAttribute("activeStreaks", activeStreaks);
         model.addAttribute("weekRate", service.getWeekCompletionRate());
         model.addAttribute("totalCheckins", service.getTotalCompletionsOverall());
+        model.addAttribute("bestStreak", service.getLongestStreakOverall());
         model.addAttribute("monthActivity", service.getDailyActivity(30));
+        model.addAttribute("weekActivity", service.getWeekActivity());
         model.addAttribute("activePage", "statistics");
         return "pages/statistics";
     }

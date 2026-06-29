@@ -8,31 +8,32 @@
 
     <div class="page-header">
         <div>
-            <h1 class="page-title">Badges</h1>
-            <p class="page-subtitle">Your achievements and milestones 🏅</p>
+            <h1 class="page-title">🏅 Badges</h1>
+            <p class="page-subtitle">Your achievements and milestones</p>
         </div>
     </div>
 
     <!-- Summary -->
-    <div class="stat-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 400px;">
-        <div class="stat-card">
-            <div class="stat-label">Earned</div>
-            <div class="stat-value" th:text="${earnedCount} + ' / ' + ${totalCount}">0 / 10</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">Completion</div>
-            <div class="stat-value" th:text="${#numbers.formatDecimal(earnedCount * 100.0 / totalCount, 0, 0)} + '%'">0%</div>
+    <div class="badge-summary">
+        <div class="badge-summary-progress">
+            <div class="bsp-text">
+                <span class="bsp-count" th:text="${earnedCount}">0</span>
+                <span class="bsp-total" th:text="' of ' + ${totalCount} + ' badges earned'"> of 10 badges earned</span>
+            </div>
+            <div class="bsp-bar">
+                <div class="bsp-fill" th:style="'width:' + (${totalCount} > 0 ? (${earnedCount} * 100 / ${totalCount}) : 0) + '%'"></div>
+            </div>
         </div>
     </div>
 
     <!-- Earned -->
     <section class="section" th:if="${!earnedBadges.isEmpty()}">
-        <h2 class="section-title">Earned Badges ✨</h2>
+        <h2 class="section-title" style="margin-bottom:14px;">Earned ✨</h2>
         <div class="badges-grid">
             <div class="badge-card earned" th:each="b : ${earnedBadges}">
-                <div class="badge-emoji" th:text="${b.type.emoji}">🌱</div>
-                <div class="badge-name" th:text="${b.type.name}">Badge</div>
-                <div class="badge-desc" th:text="${b.type.description}">Description</div>
+                <div class="badge-emoji" th:text="${b.type.emoji}"></div>
+                <div class="badge-name" th:text="${b.type.name}"></div>
+                <div class="badge-desc" th:text="${b.type.description}"></div>
                 <div class="badge-date" th:text="'Earned ' + ${b.earnedDate}"></div>
             </div>
         </div>
@@ -40,12 +41,12 @@
 
     <!-- Locked -->
     <section class="section" th:if="${!lockedTypes.isEmpty()}">
-        <h2 class="section-title">Locked Badges 🔒</h2>
+        <h2 class="section-title" style="margin-bottom:14px;">Locked 🔒</h2>
         <div class="badges-grid">
             <div class="badge-card locked" th:each="t : ${lockedTypes}">
-                <div class="badge-emoji locked-emoji" th:text="${t.emoji}">🌱</div>
-                <div class="badge-name locked-name" th:text="${t.name}">Badge</div>
-                <div class="badge-desc" th:text="${t.description}">Description</div>
+                <div class="badge-emoji" th:text="${t.emoji}"></div>
+                <div class="badge-name" th:text="${t.name}"></div>
+                <div class="badge-desc" th:text="${t.description}"></div>
             </div>
         </div>
     </section>

@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<!-- Reusable habit card -->
 <div th:fragment="habitCard(habit, done, redirectUrl)" class="habit-card" th:classappend="${done} ? ' habit-card-done' : ''">
     <div class="habit-dot" th:style="'background:' + ${habit.color}"></div>
 
@@ -10,36 +9,31 @@
         <div class="habit-name">
             <span th:text="${habit.category.emoji}"></span>
             <span th:text="${habit.name}"></span>
-            <span th:if="${done}" class="done-badge">Done</span>
+            <span th:if="${done}" class="done-pill">Done</span>
         </div>
-        <div class="habit-desc" th:text="${habit.description}" th:if="${habit.description != null and !habit.description.isEmpty()}"></div>
+        <div class="habit-desc"
+             th:if="${habit.description != null and !habit.description.isEmpty()}"
+             th:text="${habit.description}"></div>
 
         <div class="habit-progress-wrap">
             <div class="habit-progress-bar">
-                <div class="habit-progress-fill" th:style="'width:' + ${habit.progressPercent} + '%; background:' + ${habit.color}"></div>
+                <div class="habit-progress-fill"
+                     th:style="'width:' + ${habit.progressPercent} + '%; background:' + ${habit.color}"></div>
             </div>
             <span class="progress-pct" th:text="${habit.progressPercentFormatted} + '%'">0%</span>
         </div>
 
         <div class="habit-meta">
-            <span class="meta-chip">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><polyline points="13 2 13 9 20 9"/><path d="M21 15.5a10 10 0 11-5.5-9"/></svg>
-                <span th:text="${habit.currentStreak}"></span> day streak
-            </span>
-            <span class="meta-chip">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:12px;height:12px;"><polyline points="20 6 9 17 4 12"/></svg>
-                <span th:text="${habit.totalCompletions}"></span> total
-            </span>
-            <span class="meta-chip meta-chip-goal" th:text="${habit.targetDays} + '-day goal'"></span>
+            <span class="meta-chip">⏱ <span th:text="${habit.currentStreak}"></span> day streak</span>
+            <span class="meta-chip">✓ <span th:text="${habit.totalCompletions}"></span> total</span>
+            <span class="meta-pill" th:text="${habit.targetDays} + '-day goal'"></span>
         </div>
     </div>
 
     <form th:action="@{'/habits/' + ${habit.id} + '/toggle'}" method="post">
         <input type="hidden" name="redirect" th:value="${redirectUrl}"/>
-        <button type="submit" class="check-btn" th:classappend="${done} ? ' check-btn-done' : ''">
-            <svg th:if="${done}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><polyline points="20 6 9 17 4 12"/></svg>
-            <svg th:unless="${done}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:16px;height:16px;"><circle cx="12" cy="12" r="9"/></svg>
-        </button>
+        <button type="submit" class="check-btn" th:classappend="${done} ? ' check-btn-done' : ''"
+                th:text="${done} ? '✓' : '○'">○</button>
     </form>
 </div>
 

@@ -7,31 +7,40 @@
 <div class="page">
     <div class="page-header">
         <div>
-            <h1 class="page-title">Profile</h1>
-            <p class="page-subtitle">Your journey at a glance</p>
+            <h1 class="page-title">👤 Profile</h1>
+            <p class="page-subtitle">Your HabitFlow journey</p>
         </div>
     </div>
 
-    <!-- Profile card -->
-    <div class="profile-card">
-        <div class="profile-avatar-wrap">
-            <div class="profile-avatar" id="avatarDisplay" th:text="${avatar}">🌱</div>
-            <button class="avatar-change-btn" onclick="toggleAvatarPicker()">Change</button>
+    <!-- Profile hero card -->
+    <div class="profile-hero">
+        <div class="profile-avatar-section">
+            <div class="profile-avatar" id="avatarDisplay">🌱</div>
+            <button class="avatar-change-btn" onclick="toggleAvatarPicker()">Change Avatar</button>
         </div>
-        <div class="profile-info">
-            <div class="profile-name" th:text="${displayName}">HabitFlow User</div>
+        <div class="profile-main-info">
+            <div class="profile-name">HabitFlow User</div>
             <div class="profile-since">Member since <span th:text="${memberSince}">today</span></div>
-            <div class="profile-level-wrap">
-                <span class="profile-level" th:text="'Level ' + ${level}">Level 1</span>
-                <span class="profile-level-label" th:text="${levelLabel}">Seedling</span>
+
+            <div class="profile-level-row">
+                <span class="level-badge" th:text="'Lv. ' + ${level}">Lv. 1</span>
+                <span class="level-label" th:text="${levelLabel}">Seedling</span>
+            </div>
+
+            <div class="level-progress-wrap">
+                <div class="level-progress-bar">
+                    <div class="level-progress-fill" th:style="'width:' + ${levelProgress} + '%'"></div>
+                </div>
+                <span class="level-progress-label"
+                      th:text="${totalCheckins} + ' / ' + ${nextLevelAt} + ' check-ins'">0 / 5</span>
             </div>
         </div>
     </div>
 
-    <!-- Avatar picker (hidden by default) -->
+    <!-- Avatar picker panel -->
     <div class="avatar-picker-panel" id="avatarPickerPanel" style="display:none;">
         <div class="avatar-picker-title">Choose your avatar</div>
-        <div class="avatar-options">
+        <div class="avatar-grid">
             <span th:each="opt : ${avatarOptions}" class="avatar-opt" th:text="${opt}"
                   th:onclick="'pickAvatar(\'' + ${opt} + '\')'"></span>
         </div>
@@ -40,7 +49,7 @@
     <!-- Stats row -->
     <div class="stat-grid" style="margin-top:24px;">
         <div class="stat-card">
-            <div class="stat-label">Habits Tracked</div>
+            <div class="stat-label">Habits Active</div>
             <div class="stat-value" th:text="${totalHabits}">0</div>
         </div>
         <div class="stat-card">
@@ -54,20 +63,21 @@
         </div>
         <div class="stat-card">
             <div class="stat-label">Badges</div>
-            <div class="stat-value" th:text="${badgeCount}">0</div>
+            <div class="stat-value" th:text="${badgeCount} + ' / ' + ${totalBadgeCount}">0 / 10</div>
         </div>
     </div>
 
-    <!-- Earned badges preview -->
+    <!-- Recent badges -->
     <section class="section" th:if="${!recentBadges.isEmpty()}">
         <div class="section-header">
-            <h2 class="section-title">Recent Badges</h2>
+            <h2 class="section-title">Recent Badges ✨</h2>
             <a th:href="@{/badges}" class="section-link">All badges →</a>
         </div>
-        <div class="badges-grid" style="grid-template-columns: repeat(auto-fill,minmax(140px,1fr));">
+        <div class="badges-grid">
             <div class="badge-card earned" th:each="b : ${recentBadges}">
                 <div class="badge-emoji" th:text="${b.type.emoji}"></div>
                 <div class="badge-name" th:text="${b.type.name}"></div>
+                <div class="badge-desc" th:text="${b.type.description}"></div>
                 <div class="badge-date" th:text="'Earned ' + ${b.earnedDate}"></div>
             </div>
         </div>
@@ -75,16 +85,49 @@
 
     <!-- Category breakdown -->
     <section class="section" th:if="${!categoryStats.isEmpty()}">
-        <h2 class="section-title" style="margin-bottom:16px;">Habits by Category</h2>
-        <div class="category-breakdown">
-            <div class="cat-row" th:each="cs : ${categoryStats}">
-                <span class="cat-emoji" th:text="${cs.emoji}"></span>
-                <span class="cat-name" th:text="${cs.label}"></span>
-                <div class="cat-bar-track">
-                    <div class="cat-bar-fill" th:style="'width:' + ${cs.percent} + '%'"></div>
+        <div class="section-header">
+            <h2 class="section-title">Habits by Category</h2>
+        </div>
+        <div class="card">
+            <div class="category-breakdown">
+                <div class="cat-row" th:each="cs : ${categoryStats}">
+                    <span class="cat-emoji" th:text="${cs.emoji}"></span>
+                    <span class="cat-name" th:text="${cs.label}"></span>
+                    <div class="cat-bar-track">
+                        <div class="cat-bar-fill" th:style="'width:' + ${cs.percent} + '%'"></div>
+                    </div>
+                    <span class="cat-count" th:text="${cs.count} + ' habit' + (${cs.count} == 1 ? '' : 's')"></span>
                 </div>
-                <span class="cat-count" th:text="${cs.count}"></span>
             </div>
+        </div>
+    </section>
+
+    <!-- Quick actions -->
+    <section class="section">
+        <div class="section-header">
+            <h2 class="section-title">Quick Actions</h2>
+        </div>
+        <div class="quick-actions-grid">
+            <a th:href="@{/habits/new}" class="quick-action-card">
+                <div class="qa-icon">＋</div>
+                <div class="qa-label">New Habit</div>
+                <div class="qa-sub">Add something new to track</div>
+            </a>
+            <a th:href="@{/statistics}" class="quick-action-card">
+                <div class="qa-icon">📈</div>
+                <div class="qa-label">Statistics</div>
+                <div class="qa-sub">View your progress charts</div>
+            </a>
+            <a th:href="@{/badges}" class="quick-action-card">
+                <div class="qa-icon">🏅</div>
+                <div class="qa-label">Badges</div>
+                <div class="qa-sub">See all achievements</div>
+            </a>
+            <a th:href="@{/export/habits}" class="quick-action-card">
+                <div class="qa-icon">📥</div>
+                <div class="qa-label">Export Data</div>
+                <div class="qa-sub">Download habits as CSV</div>
+            </a>
         </div>
     </section>
 
@@ -98,15 +141,15 @@ function toggleAvatarPicker() {
 function pickAvatar(emoji) {
     document.getElementById('avatarDisplay').textContent = emoji;
     document.getElementById('avatarPickerPanel').style.display = 'none';
-    // Persist via localStorage
     localStorage.setItem('hf_avatar', emoji);
 }
-// Load saved avatar
-const saved = localStorage.getItem('hf_avatar');
-if (saved) document.addEventListener('DOMContentLoaded', () => {
-    const el = document.getElementById('avatarDisplay');
-    if (el) el.textContent = saved;
-});
+(function() {
+    const saved = localStorage.getItem('hf_avatar');
+    if (saved) {
+        const el = document.getElementById('avatarDisplay');
+        if (el) el.textContent = saved;
+    }
+})();
 </script>
 
 </th:block>

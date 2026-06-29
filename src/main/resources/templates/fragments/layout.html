@@ -22,7 +22,7 @@
             </div>
         </div>
 
-        <div class="sidebar-section-label">Main</div>
+        <div class="sidebar-section-label">Menu</div>
         <nav class="sidebar-nav">
             <a th:href="@{/}" class="nav-link" th:classappend="${activePage == 'dashboard'} ? ' nav-active' : ''">
                 <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
@@ -42,7 +42,9 @@
             </a>
         </nav>
 
-        <div class="sidebar-section-label" style="margin-top:12px;">Account</div>
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-section-label">Account</div>
         <nav class="sidebar-nav">
             <a th:href="@{/profile}" class="nav-link" th:classappend="${activePage == 'profile'} ? ' nav-active' : ''">
                 <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
@@ -55,19 +57,14 @@
         </nav>
 
         <div class="sidebar-bottom">
-            <a th:href="@{/habits/new}" class="btn-add-sidebar">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:15px;height:15px;flex-shrink:0;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                New Habit
-            </a>
+            <a th:href="@{/habits/new}" class="btn-add-sidebar">＋ New Habit</a>
         </div>
     </aside>
 
     <!-- Mobile top bar -->
     <header class="mobile-header">
         <span class="mobile-logo">🌱 HabitFlow</span>
-        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:20px;height:20px;"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-        </button>
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
     </header>
 
     <!-- Mobile nav -->
@@ -77,6 +74,7 @@
         <a th:href="@{/statistics}" class="mobile-nav-link" th:classappend="${activePage == 'statistics'} ? ' nav-active' : ''">Statistics</a>
         <a th:href="@{/badges}" class="mobile-nav-link" th:classappend="${activePage == 'badges'} ? ' nav-active' : ''">Badges</a>
         <a th:href="@{/profile}" class="mobile-nav-link" th:classappend="${activePage == 'profile'} ? ' nav-active' : ''">Profile</a>
+        <a th:href="@{/settings}" class="mobile-nav-link" th:classappend="${activePage == 'settings'} ? ' nav-active' : ''">Settings</a>
         <a th:href="@{/habits/new}" class="mobile-nav-link nav-add">＋ New Habit</a>
     </nav>
 
@@ -91,6 +89,8 @@
 function toggleMobileMenu() {
     document.getElementById('mobileNav').classList.toggle('open');
 }
+// Load compact setting
+if (localStorage.getItem('hf_compact') === 'true') document.body.classList.add('compact');
 </script>
 
 </body>
