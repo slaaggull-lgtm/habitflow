@@ -42,8 +42,10 @@ public class QuoteService {
             "Celebrate progress, no matter how small."
     );
 
+    private static final java.util.Random RANDOM = new java.util.Random();
+
     public String getDailyQuote() {
-        int index = Math.floorMod(LocalDate.now().toEpochDay(), QUOTES.size());
+        int index = RANDOM.nextInt(QUOTES.size());
         return QUOTES.get(index);
     }
 }

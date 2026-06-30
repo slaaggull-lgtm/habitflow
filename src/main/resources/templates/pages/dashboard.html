@@ -8,7 +8,8 @@
 
     <div class="page-header">
         <div>
-            <h1 class="page-title" th:text="${greeting} + ', welcome back 🍵'">Good morning 🍵</h1>
+            <h1 class="page-title"
+                th:text="${currentUser != null} ? ${greeting} + ', ' + ${currentUser.name} + ' 🍵' : ${greeting} + ', welcome back 🍵'">Good morning 🍵</h1>
             <p class="page-subtitle" th:text="${today}">Monday, January 1</p>
         </div>
         <a th:href="@{/habits/new}" class="btn-primary">＋ New Habit</a>

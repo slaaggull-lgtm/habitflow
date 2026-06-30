@@ -8,7 +8,9 @@ RUN mvn -q -DskipTests package
 # Run stage
 FROM eclipse-temurin:17-jre
 WORKDIR /app
+RUN mkdir -p /app/data
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
 ENV PORT=8080
+ENV HABITFLOW_DB_PATH=/app/data/habitflow.db
 ENTRYPOINT ["java", "-jar", "app.jar"]
