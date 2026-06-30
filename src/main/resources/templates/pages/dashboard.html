@@ -8,7 +8,7 @@
 
     <div class="page-header">
         <div>
-            <h1 class="page-title" th:text="${greeting} + ', welcome back 🍵'">Good morning 🍵</h1>
+            <h1 class="page-title" th:text="${greetingMessage}">Good morning, friend! Welcome back 🍵</h1>
             <p class="page-subtitle" th:text="${today}">Monday, January 1</p>
         </div>
         <a th:href="@{/habits/new}" class="btn-primary">＋ New Habit</a>
@@ -87,7 +87,7 @@
 
         <div class="habits-list" th:if="${!habits.isEmpty() and !allComplete}">
             <div th:each="habit : ${habits}" th:if="${!doneMap[habit.id]}">
-                <th:block th:replace="~{fragments/habit-card :: habitCard(${habit}, ${doneMap[habit.id]}, '/')}"/>
+                <th:block th:replace="~{fragments/habit-card :: habitCard(${habit}, ${doneMap[habit.id]}, '/', ${progressSquares[habit.id]})}"/>
             </div>
         </div>
 
@@ -98,7 +98,7 @@
             </div>
             <div class="habits-list">
                 <div th:each="habit : ${habits}" th:if="${doneMap[habit.id]}">
-                    <th:block th:replace="~{fragments/habit-card :: habitCard(${habit}, true, '/')}"/>
+                    <th:block th:replace="~{fragments/habit-card :: habitCard(${habit}, true, '/', ${progressSquares[habit.id]})}"/>
                 </div>
             </div>
         </div>

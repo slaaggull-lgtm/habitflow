@@ -10,6 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -21,6 +24,7 @@ public class ProfileController {
 
     @Autowired private HabitService service;
     @Autowired private LevelService levelService;
+    @Autowired private com.habitflow.service.UserProfileService userProfileService;
 
     @GetMapping("/profile")
     public String profile(Model model) {
@@ -54,8 +58,12 @@ public class ProfileController {
                 .map(d -> d.format(DateTimeFormatter.ofPattern("MMMM yyyy")))
                 .orElse(LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM yyyy")));
 
-        model.addAttribute("displayName", "HabitFlow User");
-        model.addAttribute("avatar", "🌱");
+        com.habitflow.model.UserProfile profile = userProfileService.getProfile();
+
+        model.addAttribute("displayName", profile.getName());
+        model.addAttribute("age", profile.getAge());
+        model.addAttribute("bio", profile.getBio());
+        model.addAttribute("avatar", profile.getAvatar());
         model.addAttribute("memberSince", memberSince);
         model.addAttribute("level", level.level());
         model.addAttribute("levelLabel", level.label());
@@ -75,6 +83,21 @@ public class ProfileController {
         ));
         model.addAttribute("activePage", "profile");
         return "pages/profile";
+    }
+
+    @PostMapping("/profile/edit")
+    public String updateProfile(@RequestParam String name,
+                                 @RequestParam(required = false) Integer age,
+                                 @RequestParam(required = false, defaultValue = "") String bio,
+                                 @RequestParam(required = false, defaultValue = "🌱") String avatar,
+                                 RedirectAttributes redirect) {
+        try {
+            userProfileService.updateProfile(name, age, bio, avatar);
+            redirect.addFlashAttribute("successMessage", "Profile updated successfully!");
+        } catch (Exception e) {
+            redirect.addFlashAttribute("errorMessage", "Could not update profile.");
+        }
+        return "redirect:/profile";
     }
 
     @GetMapping("/settings")
