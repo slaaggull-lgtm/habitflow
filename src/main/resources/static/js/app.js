@@ -92,11 +92,6 @@
         if (panel) panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
     };
 
-    window.toggleProfileEdit = function () {
-        var panel = document.getElementById('profileEditPanel');
-        if (panel) panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-    };
-
     window.pickAvatar = function (emoji) {
         var display = document.getElementById('avatarDisplay');
         if (display) display.textContent = emoji;
@@ -151,20 +146,6 @@
         var nav = document.getElementById('mobileNav');
         if (nav) nav.classList.toggle('open');
     };
-
-    /* ── Notification bell ── */
-    window.toggleNotifications = function () {
-        document.querySelectorAll('.notif-dropdown').forEach(function (dd) {
-            dd.classList.toggle('hidden');
-        });
-    };
-
-    document.addEventListener('click', function (e) {
-        if (e.target.closest('.notif-wrap')) return;
-        document.querySelectorAll('.notif-dropdown').forEach(function (dd) {
-            dd.classList.add('hidden');
-        });
-    });
 
     document.addEventListener('DOMContentLoaded', function () {
         initFlashMessages();

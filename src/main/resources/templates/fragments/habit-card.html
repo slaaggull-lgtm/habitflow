@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<div th:fragment="habitCard(habit, done, redirectUrl, squares)" class="habit-card" th:classappend="${done} ? ' habit-card-done' : ''">
+<div th:fragment="habitCard(habit, done, redirectUrl)" class="habit-card" th:classappend="${done} ? ' habit-card-done' : ''">
     <div class="habit-dot" th:style="'background:' + ${habit.color}"></div>
 
     <div class="habit-info">
@@ -21,12 +21,6 @@
                      th:style="'width:' + ${habit.progressPercent} + '%; background:' + ${habit.color}"></div>
             </div>
             <span class="progress-pct" th:text="${habit.progressPercentFormatted} + '%'">0%</span>
-        </div>
-
-        <div class="progress-squares" th:if="${squares != null}">
-            <span class="progress-square" th:each="s : ${squares}"
-                  th:classappend="${s} ? ' filled' : ''"
-                  th:style="${s} ? ('background:' + ${habit.color}) : ''"></span>
         </div>
 
         <div class="habit-meta">

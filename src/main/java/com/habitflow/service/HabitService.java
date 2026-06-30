@@ -267,54 +267,6 @@ public class HabitService {
         return result;
     }
 
-    /**
-     * GitHub-contribution-style progress squares for a habit: one boolean
-     * per day (filled = completed), covering up to the last 30 days or the
-     * habit's target length, whichever is smaller, ending today.
-     */
-    public List<Boolean> getProgressSquares(Habit habit) {
-        int days = Math.min(habit.getTargetDays(), 30);
-        LocalDate today = LocalDate.now();
-        List<Boolean> squares = new ArrayList<>();
-        for (int i = days - 1; i >= 0; i--) {
-            LocalDate date = today.minusDays(i);
-            squares.add(logRepo.existsByHabitIdAndLogDate(habit.getId(), date));
-        }
-        return squares;
-    }
-
-    /** Squares for every habit at once, keyed by habit id (used on the dashboard). */
-    public Map<Long, List<Boolean>> getProgressSquaresForAll(List<Habit> habits) {
-        Map<Long, List<Boolean>> result = new LinkedHashMap<>();
-        for (Habit h : habits) {
-            result.put(h.getId(), getProgressSquares(h));
-        }
-        return result;
-    }
-
-    /**
-     * Total completions grouped by category, used by the statistics page's
-     * pie/doughnut chart. Categories with zero completions are omitted.
-     */
-    public List<Map<String, Object>> getCategoryDistribution() {
-        Map<Habit.Category, Integer> totals = new LinkedHashMap<>();
-        for (Habit h : getAllHabits()) {
-            totals.merge(h.getCategory(), h.getTotalCompletions(), Integer::sum);
-        }
-
-        List<Map<String, Object>> result = new ArrayList<>();
-        for (Map.Entry<Habit.Category, Integer> entry : totals.entrySet()) {
-            if (entry.getValue() <= 0) continue;
-            Map<String, Object> row = new LinkedHashMap<>();
-            row.put("emoji", entry.getKey().getEmoji());
-            row.put("label", entry.getKey().getLabel());
-            row.put("value", entry.getValue());
-            result.add(row);
-        }
-        result.sort((a, b) -> Integer.compare((Integer) b.get("value"), (Integer) a.get("value")));
-        return result;
-    }
-
     @Transactional
     public void seedIfEmpty() {
         cleanupDuplicateBadges();

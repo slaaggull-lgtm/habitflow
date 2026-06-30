@@ -14,14 +14,12 @@
 
     <div class="profile-hero">
         <div class="profile-avatar-section">
-            <div class="profile-avatar" id="avatarDisplay" th:text="${avatar}">🌱</div>
+            <div class="profile-avatar" id="avatarDisplay">🌱</div>
             <button type="button" class="avatar-change-btn" onclick="toggleAvatarPicker()">Change Avatar</button>
         </div>
         <div class="profile-main-info">
             <div class="profile-name" th:text="${displayName}">HabitFlow User</div>
             <div class="profile-since">Member since <span th:text="${memberSince}">today</span></div>
-            <div class="profile-bio" th:if="${bio != null and !bio.isEmpty()}" th:text="${bio}"></div>
-            <div class="profile-age-chip" th:if="${age != null}" th:text="'Age ' + ${age}"></div>
 
             <div class="profile-level-row">
                 <span class="level-badge" th:text="'Lv. ' + ${level}">Lv. 1</span>
@@ -35,34 +33,7 @@
                 <span class="level-progress-label"
                       th:text="${totalCheckins} + ' / ' + ${nextLevelAt} + ' check-ins to next level'">0 / 5</span>
             </div>
-
-            <button type="button" class="btn-secondary profile-edit-btn" onclick="toggleProfileEdit()">✎ Edit Profile</button>
         </div>
-    </div>
-
-    <div class="profile-edit-panel" id="profileEditPanel" style="display:none;">
-        <div class="profile-edit-title">Edit your profile</div>
-        <form th:action="@{/profile/edit}" method="post">
-            <div class="profile-edit-grid">
-                <div class="profile-field">
-                    <label for="profileName">Name</label>
-                    <input type="text" id="profileName" name="name" th:value="${displayName}" required maxlength="40"/>
-                </div>
-                <div class="profile-field">
-                    <label for="profileAge">Age</label>
-                    <input type="number" id="profileAge" name="age" th:value="${age}" min="1" max="129"/>
-                </div>
-                <div class="profile-field profile-field-full">
-                    <label for="profileBio">Bio</label>
-                    <textarea id="profileBio" name="bio" rows="2" maxlength="500" th:text="${bio}"></textarea>
-                </div>
-                <input type="hidden" name="avatar" th:value="${avatar}"/>
-            </div>
-            <div class="profile-edit-actions">
-                <button type="submit" class="btn-primary">Save changes</button>
-                <button type="button" class="btn-secondary" onclick="toggleProfileEdit()">Cancel</button>
-            </div>
-        </form>
     </div>
 
     <div class="avatar-picker-panel" id="avatarPickerPanel" style="display:none;">

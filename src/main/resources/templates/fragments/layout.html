@@ -62,15 +62,7 @@
 
     <header class="mobile-header">
         <span class="mobile-logo">🌱 HabitFlow</span>
-        <div class="mobile-header-right">
-            <div class="notif-wrap">
-                <button type="button" class="notif-bell" onclick="toggleNotifications()" aria-label="Notifications">
-                    🔔
-                    <span class="notif-badge" th:if="${unreadNotificationCount > 0}" th:text="${unreadNotificationCount}">0</span>
-                </button>
-            </div>
-            <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu">☰</button>
-        </div>
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu">☰</button>
     </header>
 
     <nav class="mobile-nav" id="mobileNav">
@@ -84,32 +76,6 @@
     </nav>
 
     <main class="main-content">
-        <div class="topbar">
-            <div class="topbar-spacer"></div>
-            <div class="notif-wrap">
-                <button type="button" class="notif-bell" onclick="toggleNotifications()" aria-label="Notifications">
-                    🔔
-                    <span class="notif-badge" th:if="${unreadNotificationCount > 0}" th:text="${unreadNotificationCount}">0</span>
-                </button>
-                <div class="notif-dropdown hidden" id="notifDropdown">
-                    <div class="notif-dropdown-title">Notifications</div>
-                    <div class="notif-empty" th:if="${notifications.isEmpty()}">All caught up — no notifications 🌱</div>
-                    <div class="notif-item" th:each="n : ${notifications}"
-                         th:classappend="${n.type() == 'BADGE'} ? ' notif-item-badge' : ' notif-item-reminder'">
-                        <span class="notif-icon" th:text="${n.icon()}"></span>
-                        <div class="notif-body">
-                            <div class="notif-title" th:text="${n.title()}"></div>
-                            <div class="notif-message" th:text="${n.message()}"></div>
-                            <div class="notif-time" th:text="${n.timeLabel()}"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <a th:href="@{/profile}" class="topbar-identity">
-                <span class="topbar-avatar" th:text="${navAvatar}">🌱</span>
-                <span class="topbar-name" th:text="${navUsername}">User</span>
-            </a>
-        </div>
         <th:block th:replace="${content}"/>
     </main>
 

@@ -21,15 +21,12 @@ public class HabitController {
     @Autowired private HabitService service;
     @Autowired private LevelService levelService;
     @Autowired private QuoteService quoteService;
-    @Autowired private com.habitflow.service.UserProfileService userProfileService;
 
     @GetMapping("/")
     public String dashboard(Model model) {
         List<Habit> habits = service.getAllHabits();
         int hour = java.time.LocalTime.now().getHour();
-        String greetingPrefix = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-        String displayName = userProfileService.getProfile().getName();
-        String greetingMessage = greetingPrefix + ", " + displayName + "! Welcome back 🍵";
+        String greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
         int todayDone = service.getTodayCompletedCount();
         int totalHabits = habits.size();
@@ -39,11 +36,9 @@ public class HabitController {
         Map<Long, Boolean> doneMap = new HashMap<>();
         for (Habit h : habits) doneMap.put(h.getId(), service.isCompletedToday(h.getId()));
 
-        Map<Long, List<Boolean>> progressSquares = service.getProgressSquaresForAll(habits);
-
         boolean allComplete = totalHabits > 0 && todayDone >= totalHabits;
 
-        model.addAttribute("greetingMessage", greetingMessage);
+        model.addAttribute("greeting", greeting);
         model.addAttribute("today", LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, MMMM d")));
         model.addAttribute("dailyQuote", quoteService.getDailyQuote());
         model.addAttribute("habits", habits);
@@ -60,7 +55,6 @@ public class HabitController {
         model.addAttribute("levelXp", level.xp());
         model.addAttribute("nextLevelAt", level.nextThreshold());
         model.addAttribute("doneMap", doneMap);
-        model.addAttribute("progressSquares", progressSquares);
         model.addAttribute("activePage", "dashboard");
         return "pages/dashboard";
     }
@@ -187,24 +181,6 @@ public class HabitController {
                 .mapToInt(d -> ((Number) d.get("count")).intValue())
                 .max().orElse(1);
 
-        // Category distribution → pie/doughnut chart (data prepared in Java, Chart.js only renders it)
-        List<Map<String, Object>> categoryDistribution = service.getCategoryDistribution();
-        List<String> categoryLabels = new ArrayList<>();
-        List<Integer> categoryValues = new ArrayList<>();
-        for (Map<String, Object> row : categoryDistribution) {
-            categoryLabels.add(row.get("emoji") + " " + row.get("label"));
-            categoryValues.add((Integer) row.get("value"));
-        }
-
-        // 14-day completion trend → line chart
-        List<Map<String, Object>> trendActivity = service.getDailyActivity(14);
-        List<String> trendLabels = new ArrayList<>();
-        List<Long> trendValues = new ArrayList<>();
-        for (Map<String, Object> day : trendActivity) {
-            trendLabels.add((String) day.get("label"));
-            trendValues.add((Long) day.get("count"));
-        }
-
         model.addAttribute("habits", habits);
         model.addAttribute("habitBreakdown", service.getHabitBreakdown());
         model.addAttribute("totalHabits", habits.size());
@@ -215,11 +191,6 @@ public class HabitController {
         model.addAttribute("monthActivity", monthActivity);
         model.addAttribute("monthMax", monthMax);
         model.addAttribute("weekActivity", service.getWeekActivity());
-        model.addAttribute("categoryLabels", categoryLabels);
-        model.addAttribute("categoryValues", categoryValues);
-        model.addAttribute("trendLabels", trendLabels);
-        model.addAttribute("trendValues", trendValues);
-        model.addAttribute("hasCategoryData", !categoryValues.isEmpty());
         model.addAttribute("activePage", "statistics");
         return "pages/statistics";
     }
