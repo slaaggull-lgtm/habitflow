@@ -32,16 +32,16 @@ public class UserController {
                               RedirectAttributes redirect) {
         try {
             if (name == null || name.trim().isEmpty()) {
-                redirect.addFlashAttribute("errorMessage", "İsim alanı boş olamaz.");
+                redirect.addFlashAttribute("errorMessage", "Name cannot be empty.");
                 return "redirect:/users";
             }
             User saved = userRepository.save(new User(name.trim(), email.trim(), avatar.trim()));
             if (session.getAttribute("activeUserId") == null) {
                 session.setAttribute("activeUserId", saved.getId());
             }
-            redirect.addFlashAttribute("successMessage", "\"" + name.trim() + "\" kullanıcısı eklendi.");
+            redirect.addFlashAttribute("successMessage", "\"" + name.trim() + "\" added.");
         } catch (Exception e) {
-            redirect.addFlashAttribute("errorMessage", "Kullanıcı eklenemedi.");
+            redirect.addFlashAttribute("errorMessage", "Could not add user.");
         }
         return "redirect:/users";
     }
@@ -54,9 +54,9 @@ public class UserController {
             if (activeId != null && activeId.equals(id)) {
                 session.removeAttribute("activeUserId");
             }
-            redirect.addFlashAttribute("successMessage", "Kullanıcı silindi.");
+            redirect.addFlashAttribute("successMessage", "User removed.");
         } catch (Exception e) {
-            redirect.addFlashAttribute("errorMessage", "Kullanıcı silinemedi.");
+            redirect.addFlashAttribute("errorMessage", "Could not remove user.");
         }
         return "redirect:/users";
     }
@@ -66,7 +66,7 @@ public class UserController {
         User user = userRepository.findById(id).orElse(null);
         if (user != null) {
             session.setAttribute("activeUserId", user.getId());
-            redirect.addFlashAttribute("successMessage", "Aktif kullanıcı: " + user.getName());
+            redirect.addFlashAttribute("successMessage", "Active user: " + user.getName());
         }
         return "redirect:/users";
     }

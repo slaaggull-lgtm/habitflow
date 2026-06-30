@@ -21,11 +21,18 @@ public class ProfileController {
 
     @Autowired private HabitService service;
     @Autowired private LevelService levelService;
+    @Autowired private com.habitflow.repository.UserRepository userRepository;
 
     @GetMapping("/profile")
-    public String profile(Model model) {
+    public String profile(Model model, jakarta.servlet.http.HttpSession session) {
         List<Habit> habits = service.getAllHabits();
         List<Badge> badges = service.getUniqueBadges();
+
+        com.habitflow.model.User activeUser = null;
+        Object activeId = session.getAttribute("activeUserId");
+        if (activeId != null) {
+            activeUser = userRepository.findById((Long) activeId).orElse(null);
+        }
 
         int totalCheckins = service.getTotalCompletionsOverall();
         LevelService.LevelInfo level = levelService.getLevelInfo(totalCheckins);
@@ -54,8 +61,8 @@ public class ProfileController {
                 .map(d -> d.format(DateTimeFormatter.ofPattern("MMMM yyyy")))
                 .orElse(LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM yyyy")));
 
-        model.addAttribute("displayName", "HabitFlow User");
-        model.addAttribute("avatar", "🌱");
+        model.addAttribute("displayName", activeUser != null ? activeUser.getName() : "No active user");
+        model.addAttribute("avatar", activeUser != null ? activeUser.getAvatar() : "👤");
         model.addAttribute("memberSince", memberSince);
         model.addAttribute("level", level.level());
         model.addAttribute("levelLabel", level.label());

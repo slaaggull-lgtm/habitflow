@@ -80,13 +80,32 @@
     </nav>
 
     <main class="main-content">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 36px;background:var(--mist);border-bottom:1px solid var(--border-light);font-size:13px;color:var(--forest);">
-            <span th:if="${currentUser != null}">
-                <span th:text="${currentUser.avatar}">🌱</span>
-                Aktif kullanıcı: <strong th:text="${currentUser.name}">Kullanıcı</strong>
-            </span>
-            <span th:if="${currentUser == null}">Aktif kullanıcı seçilmedi.</span>
-            <a th:href="@{/users}" style="color:var(--moss);font-weight:600;text-decoration:none;">Kullanıcıları yönet →</a>
+        <div style="position:relative;display:flex;justify-content:flex-end;padding:10px 36px 0;">
+            <button type="button" id="notifBellBtn" aria-label="Notifications"
+                    style="position:relative;background:var(--white);border:1px solid var(--border-light);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow-sm);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+                <span th:if="${earnedBadgeCount != null and earnedBadgeCount > 0}"
+                      style="position:absolute;top:-2px;right:-2px;background:var(--sage);color:var(--white);font-size:10px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 3px;"
+                      th:text="${earnedBadgeCount}">0</span>
+            </button>
+            <div id="notifPanel"
+                 style="display:none;position:absolute;top:46px;right:36px;width:260px;background:var(--white);border:1px solid var(--border-light);border-radius:var(--radius-md);box-shadow:var(--shadow-md);padding:14px;font-size:13px;z-index:50;">
+                <div style="font-weight:700;margin-bottom:8px;color:var(--forest);">Active user</div>
+                <div th:if="${currentUser != null}" style="margin-bottom:12px;color:var(--fern);">
+                    <span th:text="${currentUser.avatar}">🌱</span>
+                    <span th:text="${currentUser.name}">User</span>
+                </div>
+                <div th:if="${currentUser == null}" style="margin-bottom:12px;color:var(--muted);">No active user selected</div>
+
+                <div style="font-weight:700;margin-bottom:8px;color:var(--forest);">Badges earned (<span th:text="${earnedBadgeCount}">0</span>)</div>
+                <div th:if="${#lists.isEmpty(recentBadges)}" style="color:var(--muted);margin-bottom:10px;">No badges yet</div>
+                <div th:each="b : ${recentBadges}" style="display:flex;align-items:center;gap:6px;margin-bottom:6px;color:var(--fern);">
+                    <span th:text="${b.type.emoji}">🌱</span>
+                    <span th:text="${b.type.name}">Badge</span>
+                </div>
+
+                <a th:href="@{/users}" style="display:block;margin-top:8px;color:var(--moss);font-weight:600;text-decoration:none;">Manage users →</a>
+            </div>
         </div>
         <th:block th:replace="${content}"/>
     </main>
@@ -111,6 +130,22 @@
 </div>
 
 <script th:src="@{/js/app.js}"></script>
+<script>
+(function () {
+    var btn = document.getElementById('notifBellBtn');
+    var panel = document.getElementById('notifPanel');
+    if (!btn || !panel) return;
+    btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        panel.style.display = (panel.style.display === 'none' || !panel.style.display) ? 'block' : 'none';
+    });
+    document.addEventListener('click', function (e) {
+        if (!panel.contains(e.target) && e.target !== btn) {
+            panel.style.display = 'none';
+        }
+    });
+})();
+</script>
 
 </body>
 </html>

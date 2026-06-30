@@ -5,6 +5,7 @@ import com.habitflow.model.Habit;
 import com.habitflow.service.HabitService;
 import com.habitflow.service.LevelService;
 import com.habitflow.service.QuoteService;
+import com.habitflow.service.VirtualClockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +22,7 @@ public class HabitController {
     @Autowired private HabitService service;
     @Autowired private LevelService levelService;
     @Autowired private QuoteService quoteService;
+    @Autowired private VirtualClockService clock;
 
     @GetMapping("/")
     public String dashboard(Model model) {
@@ -39,7 +41,7 @@ public class HabitController {
         boolean allComplete = totalHabits > 0 && todayDone >= totalHabits;
 
         model.addAttribute("greeting", greeting);
-        model.addAttribute("today", LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, MMMM d")));
+        model.addAttribute("today", clock.today().format(DateTimeFormatter.ofPattern("EEEE, MMMM d")));
         model.addAttribute("dailyQuote", quoteService.getDailyQuote());
         model.addAttribute("habits", habits);
         model.addAttribute("todayDone", todayDone);

@@ -20,6 +20,7 @@ public class HabitService {
     @Autowired private HabitRepository habitRepo;
     @Autowired private HabitLogRepository logRepo;
     @Autowired private BadgeRepository badgeRepo;
+    @Autowired private VirtualClockService clock;
 
     public List<Habit> getAllHabits() {
         return habitRepo.findByActiveTrueOrderByIdAsc();
@@ -57,7 +58,7 @@ public class HabitService {
 
     @Transactional
     public boolean toggleToday(Long habitId) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = clock.today();
         Habit habit = habitRepo.findById(habitId).orElseThrow();
 
         if (logRepo.existsByHabitIdAndLogDate(habitId, today)) {
@@ -70,16 +71,30 @@ public class HabitService {
             recalculateStreak(habit);
             checkAndAwardBadges(habit);
             habitRepo.save(habit);
+            advanceDayIfAllComplete();
             return true;
         }
     }
 
+    /** When every active habit is checked off for the day, move the virtual clock
+     *  forward so a fresh day of tasks is immediately available. */
+    private void advanceDayIfAllComplete() {
+        List<Habit> habits = getAllHabits();
+        if (habits.isEmpty()) return;
+        LocalDate today = clock.today();
+        boolean allDone = habits.stream()
+                .allMatch(h -> logRepo.existsByHabitIdAndLogDate(h.getId(), today));
+        if (allDone) {
+            clock.advanceDay();
+        }
+    }
+
     public boolean isCompletedToday(Long habitId) {
-        return logRepo.existsByHabitIdAndLogDate(habitId, LocalDate.now());
+        return logRepo.existsByHabitIdAndLogDate(habitId, clock.today());
     }
 
     private void recalculateStreak(Habit habit) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = clock.today();
         int streak = 0;
         LocalDate check = today;
         while (logRepo.existsByHabitIdAndLogDate(habit.getId(), check)) {
@@ -113,7 +128,7 @@ public class HabitService {
             awardGlobal(Badge.Type.MULTI_HABIT);
         }
 
-        LocalDate monday = LocalDate.now().with(DayOfWeek.MONDAY);
+        LocalDate monday = clock.today().with(DayOfWeek.MONDAY);
         List<Habit> all = getAllHabits();
         if (!all.isEmpty()) {
             boolean perfectWeek = all.stream().allMatch(h ->
@@ -153,7 +168,7 @@ public class HabitService {
     }
 
     public int getTodayCompletedCount() {
-        return (int) logRepo.countDistinctHabitsByDate(LocalDate.now());
+        return (int) logRepo.countDistinctHabitsByDate(clock.today());
     }
 
     public int getLongestStreakOverall() {
@@ -182,7 +197,7 @@ public class HabitService {
 
     public List<Map<String, Object>> getDailyActivity(int days) {
         List<Map<String, Object>> result = new ArrayList<>();
-        LocalDate today = LocalDate.now();
+        LocalDate today = clock.today();
         int maxCount = 1;
         List<Long> counts = new ArrayList<>();
 
@@ -208,7 +223,7 @@ public class HabitService {
 
     public List<Map<String, Object>> getWeekActivity() {
         List<Map<String, Object>> result = new ArrayList<>();
-        LocalDate monday = LocalDate.now().with(DayOfWeek.MONDAY);
+        LocalDate monday = clock.today().with(DayOfWeek.MONDAY);
         String[] days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
         int totalHabits = getAllHabits().size();
         long maxCount = 1;
@@ -225,7 +240,7 @@ public class HabitService {
             Map<String, Object> entry = new LinkedHashMap<>();
             entry.put("day", days[i]);
             entry.put("count", count);
-            entry.put("isToday", date.equals(LocalDate.now()));
+            entry.put("isToday", date.equals(clock.today()));
             entry.put("percent", maxCount > 0 ? (int) Math.round((double) count / maxCount * 100) : 0);
             entry.put("completionRate", totalHabits > 0
                     ? (int) Math.round((double) count / totalHabits * 100) : 0);
@@ -237,7 +252,7 @@ public class HabitService {
     public double getWeekCompletionRate() {
         List<Habit> habits = getAllHabits();
         if (habits.isEmpty()) return 0;
-        LocalDate monday = LocalDate.now().with(DayOfWeek.MONDAY);
+        LocalDate monday = clock.today().with(DayOfWeek.MONDAY);
         long actual = 0;
         for (Habit h : habits) {
             actual += logRepo.countByHabitIdAndLogDateBetween(h.getId(), monday, monday.plusDays(6));
@@ -249,7 +264,7 @@ public class HabitService {
     /** Per-habit stats for the statistics page. */
     public List<Map<String, Object>> getHabitBreakdown() {
         List<Habit> habits = getAllHabits();
-        LocalDate monday = LocalDate.now().with(DayOfWeek.MONDAY);
+        LocalDate monday = clock.today().with(DayOfWeek.MONDAY);
         List<Map<String, Object>> result = new ArrayList<>();
 
         for (Habit h : habits) {
